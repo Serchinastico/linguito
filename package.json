@@ -1,0 +1,95 @@
+{
+  "name": "linguito",
+  "description": "CLI tool designed to enhance the capabilities of Lingui",
+  "version": "0.0.0",
+  "author": "Serchinastico",
+  "bin": {
+    "linguito": "./bin/run.js"
+  },
+  "bugs": "https://github.com/madeja-studio/linguito/issues",
+  "dependencies": {
+    "@oclif/core": "^4",
+    "@oclif/plugin-help": "^6"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19",
+    "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9",
+    "@oclif/prettier-config": "^0.2.1",
+    "@oclif/test": "^4",
+    "@release-it/conventional-changelog": "^9",
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "@types/node": "^18",
+    "chai": "^4",
+    "commitlint": "^19",
+    "eslint": "^9",
+    "eslint-config-oclif": "^5",
+    "eslint-config-oclif-typescript": "^3",
+    "eslint-config-prettier": "^9",
+    "eslint-plugin-perfectionist": "^4",
+    "eslint-plugin-prettier": "^5",
+    "lefthook": "^1",
+    "mocha": "^10",
+    "oclif": "^4",
+    "prettier": "^3",
+    "release-it": "^17",
+    "shx": "^0.3.3",
+    "ts-node": "^10",
+    "typescript": "^5",
+    "typescript-eslint": "^8",
+    "vitest": "^2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/madeja-studio/linguito",
+  "keywords": [
+    "oclif",
+    "lingui",
+    "i18n",
+    "cli",
+    "utility",
+    "assistant"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "type": "module",
+  "oclif": {
+    "bin": "linguito",
+    "dirname": "linguito",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help"
+    ],
+    "topicSeparator": " ",
+    "topics": {}
+  },
+  "repository": "madeja-studio/linguito",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "lint": "eslint \"**/*.{js,ts}\"",
+    "lint:commit": "commitlint --edit",
+    "lint:fix": "eslint \"**/*.{js,ts}\" --fix",
+    "prepare": "lefthook install",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "npm run lint",
+    "prepack": "oclif manifest && oclif readme",
+    "release": "release-it",
+    "release:major": "release-it --increment=major",
+    "release:minor": "release-it --increment=minor",
+    "release:patch": "release-it --increment=patch",
+    "start": "npm run build && ./bin/run.js",
+    "test": "vitest"
+  },
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

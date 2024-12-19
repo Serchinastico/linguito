@@ -1,0 +1,20 @@
+# Logs
+*-debug.log
+*-error.log
+
+# IDE
+/.idea
+
+# Artifacts
+/dist
+/tmp
+/node_modules
+oclif.manifest.json
+
+# OS
+**/.DS_Store
+
+# Package Managers
+yarn.lock
+pnpm-lock.yaml
+
