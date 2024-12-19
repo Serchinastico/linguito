@@ -1,0 +1,2 @@
+# linguito
+Lingui assistant tool
