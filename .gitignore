@@ -10,6 +10,7 @@
 /tmp
 /node_modules
 oclif.manifest.json
+tsconfig.tsbuildinfo
 
 # OS
 **/.DS_Store
