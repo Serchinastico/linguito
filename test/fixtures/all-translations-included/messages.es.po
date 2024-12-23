@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2024-09-13 14:14+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/features/tools/hooks/pdf/usePdfExporter.ts:63
+msgid "{0} - Manual"
+msgstr "{0} - Manual"
+
+#: src/features/image-viewer/components/Header.tsx:24
+msgid "{0} of {1}"
+msgstr "{0} de {1}"
+
+#: src/features/settings/components/AppPurchasePrompt.tsx:18
+msgid "<0><1>Support us in this project and get the app with no limitations </1><2>forever</2><3>.</3></0>"
+msgstr "<0><1>Apóyanos en este proyecto y consigue la app sin limitaciones </1><2>para siempre</2><3>.</3></0>"

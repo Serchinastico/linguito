@@ -1,5 +1,6 @@
 import {FlatCompat} from '@eslint/eslintrc'
 import eslint from '@eslint/js'
+import pluginChaiFriendly from 'eslint-plugin-chai-friendly'
 import perfectionist from 'eslint-plugin-perfectionist'
 import prettier from 'eslint-plugin-prettier'
 import path from 'node:path'
@@ -20,6 +21,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...prettierConfig,
+  pluginChaiFriendly.configs.recommendedFlat,
   perfectionist.configs['recommended-natural'],
   {
     ignores: ['dist', 'bin', 'src/templates', 'integration-test-project'],
@@ -29,6 +31,7 @@ export default tseslint.config(
       prettier,
     },
     rules: {
+      '@typescript-eslint/no-unused-expressions': 'off',
       'no-await-in-loop': 'off',
       'perfectionist/sort-imports': 'error',
       'perfectionist/sort-objects': 'error',
