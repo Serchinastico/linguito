@@ -1,18 +1,11 @@
 import {Args} from '@oclif/core'
-import {ArrayExpression, Literal, ObjectExpression, Property, VariableDeclaration, VariableDeclarator} from 'acorn'
-import gettextParser from 'gettext-parser'
-import fs from 'node:fs/promises'
 import * as path from 'node:path'
 
-import {Ast} from '../lib/ast/ast.js'
 import BaseCommand from '../lib/command/base'
 import {invariant} from '../lib/command/invariant'
 import {canReadFile} from '../lib/fs/fs.js'
-
-type MissingTranslation = {
-  file: string
-  key: string
-}
+import {TranslationsChecker} from '../lib/lingui/checker'
+import {ConfigParser} from '../lib/lingui/parser.js'
 
 const SEPARATOR = '\n\t• '
 
@@ -29,67 +22,12 @@ If any missing translations are found, the command reports them and exits with a
     const {args} = await this.parse(Create)
     const {projectDir} = args
 
-    const linguiConfigFilePath = path.resolve(projectDir, 'lingui.config.js')
+    const linguiConfigFilePath = await this.getConfigFile(projectDir)
+    const linguiConfigFileParser = new ConfigParser(projectDir)
+    const translationsChecker = new TranslationsChecker()
 
-    const isLinguiConfigFileReadable = await canReadFile(linguiConfigFilePath)
-    invariant(isLinguiConfigFileReadable, 'missing_lingui_config_file')
-
-    const ast = await Ast.fromFile(linguiConfigFilePath)
-
-    const exports = ast
-      .filterByType('ExportNamedDeclaration')
-      .get<VariableDeclaration>('declaration')
-      .get<VariableDeclarator>('declarations')
-
-    const locales = exports
-      .filter((node) => node.id?.type === 'Identifier' && node.id.name === 'locales')
-      .get<ArrayExpression>('init')
-      .get<Literal>('elements')
-      .get('value')
-
-    const catalogs = exports
-      .filter((node) => node.id?.type === 'Identifier' && node.id.name === 'catalogs')
-      .get<ArrayExpression>('init')
-      .get<ObjectExpression>('elements')
-      .get<Property>('properties')
-      .filter((node) => node.key.type === 'Identifier' && node.key.name === 'path')
-      .get<Literal>('value')
-      .get('value')
-
-    const formats = exports
-      .filter((node) => node.id?.type === 'Identifier' && node.id.name === 'format')
-      .get<Literal>('init')
-      .get('value')
-
-    const format = formats[0]
-    invariant(format === 'po', 'unknown_catalog_file_format')
-
-    const catalogFiles: string[] = []
-    for (const locale of locales) {
-      for (const catalog of catalogs) {
-        const resolvedPath = catalog.replace('<rootDir>', projectDir).replace('{locale}', locale)
-        catalogFiles.push(`${resolvedPath}.${format}`)
-      }
-    }
-
-    const missingTranslations: MissingTranslation[] = []
-    for (const catalogFile of catalogFiles) {
-      const poFile = await fs.readFile(catalogFile, 'utf-8')
-      const po = gettextParser.po.parse(poFile)
-      const translations = po.translations['']
-
-      for (const [key, translation] of Object.entries(translations)) {
-        if (key === '') continue
-
-        if (
-          !translation.msgstr ||
-          translation.msgstr.length === 0 ||
-          translation.msgstr.some((msgstr) => msgstr === '')
-        ) {
-          missingTranslations.push({file: catalogFile, key})
-        }
-      }
-    }
+    const catalogFiles = await linguiConfigFileParser.parse(linguiConfigFilePath)
+    const missingTranslations = await translationsChecker.findMissing(catalogFiles)
 
     if (missingTranslations.length > 0) {
       const missingTranslationsString = missingTranslations
@@ -103,5 +41,14 @@ If any missing translations are found, the command reports them and exits with a
     }
 
     return Promise.resolve(undefined)
+  }
+
+  private async getConfigFile(projectDir: string) {
+    const linguiConfigFilePath = path.resolve(projectDir, 'lingui.config.js')
+    const isLinguiConfigFileReadable = await canReadFile(linguiConfigFilePath)
+
+    invariant(isLinguiConfigFileReadable, 'missing_lingui_config_file')
+
+    return linguiConfigFilePath
   }
 }
