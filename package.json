@@ -12,7 +12,7 @@
     "@oclif/plugin-help": "^6",
     "acorn": "^8",
     "espree": "^10",
-    "gettext-parser": "^8.0.0"
+    "gettext-parser": "^8"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19",
@@ -22,8 +22,8 @@
     "@oclif/test": "^4",
     "@release-it/conventional-changelog": "^9",
     "@types/chai": "^4",
-    "@types/espree": "^10.1.0",
-    "@types/gettext-parser": "^4.0.4",
+    "@types/espree": "^10",
+    "@types/gettext-parser": "^4",
     "@types/node": "^18",
     "chai": "^4",
     "commitlint": "^19",
@@ -31,7 +31,7 @@
     "eslint-config-oclif": "^5",
     "eslint-config-oclif-typescript": "^3",
     "eslint-config-prettier": "^9",
-    "eslint-plugin-chai-friendly": "^1.0.1",
+    "eslint-plugin-chai-friendly": "^1",
     "eslint-plugin-perfectionist": "^4",
     "eslint-plugin-prettier": "^5",
     "lefthook": "^1",
@@ -39,7 +39,6 @@
     "prettier": "^3",
     "release-it": "^17",
     "shx": "^0.3.3",
-    "tiny-invariant": "^1",
     "ts-morph": "^24",
     "tsx": "^4",
     "typescript": "^5",

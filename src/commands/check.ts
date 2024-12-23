@@ -1,11 +1,12 @@
-import {Args, Command} from '@oclif/core'
+import {Args} from '@oclif/core'
 import {ArrayExpression, Literal, ObjectExpression, Property, VariableDeclaration, VariableDeclarator} from 'acorn'
 import gettextParser from 'gettext-parser'
 import fs from 'node:fs/promises'
 import * as path from 'node:path'
-import invariant from 'tiny-invariant'
 
 import {Ast} from '../lib/ast/ast.js'
+import BaseCommand from '../lib/command/base'
+import {invariant} from '../lib/command/invariant'
 import {canReadFile} from '../lib/fs/fs.js'
 
 type MissingTranslation = {
@@ -15,13 +16,14 @@ type MissingTranslation = {
 
 const SEPARATOR = '\n\t• '
 
-export default class Create extends Command {
+export default class Create extends BaseCommand {
   static args = {
     projectDir: Args.file({default: '.', description: 'Project root directory', required: false}),
   }
-  static description = 'check'
-  static examples = []
-  static summary = 'check'
+  static description = `Analyze the project's '.po' catalog files to ensure all translations are complete. 
+If any missing translations are found, the command reports them and exits with an error.`
+  static examples = [`<%= config.bin %> <%= command.id %> ./my-app`]
+  static summary = 'Check for missing translations in catalog files.'
 
   async run() {
     const {args} = await this.parse(Create)
@@ -30,7 +32,7 @@ export default class Create extends Command {
     const linguiConfigFilePath = path.resolve(projectDir, 'lingui.config.js')
 
     const isLinguiConfigFileReadable = await canReadFile(linguiConfigFilePath)
-    invariant(isLinguiConfigFileReadable, 'lingui.config.js does not exist or is not readable')
+    invariant(isLinguiConfigFileReadable, 'missing_lingui_config_file')
 
     const ast = await Ast.fromFile(linguiConfigFilePath)
 
@@ -60,7 +62,7 @@ export default class Create extends Command {
       .get('value')
 
     const format = formats[0]
-    invariant(format === 'po', "Translation files must be in 'po' format")
+    invariant(format === 'po', 'unknown_catalog_file_format')
 
     const catalogFiles: string[] = []
     for (const locale of locales) {
@@ -79,11 +81,11 @@ export default class Create extends Command {
       for (const [key, translation] of Object.entries(translations)) {
         if (key === '') continue
 
-        if (!translation.msgstr) {
-          missingTranslations.push({file: catalogFile, key})
-        } else if (translation.msgstr.length === 0) {
-          missingTranslations.push({file: catalogFile, key})
-        } else if (translation.msgstr.some((msgstr) => msgstr === '')) {
+        if (
+          !translation.msgstr ||
+          translation.msgstr.length === 0 ||
+          translation.msgstr.some((msgstr) => msgstr === '')
+        ) {
           missingTranslations.push({file: catalogFile, key})
         }
       }
@@ -96,7 +98,7 @@ export default class Create extends Command {
 
       this.error(`The following translations are missing: ${SEPARATOR}${missingTranslationsString}`, {
         code: 'missing_translations',
-        exit: -1,
+        exit: -2,
       })
     }
 
