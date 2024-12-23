@@ -6,7 +6,8 @@
     "rootDir": "src",
     "strict": true,
     "target": "es2022",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx"
   },
   "include": ["./src/**/*"],
   "ts-node": {

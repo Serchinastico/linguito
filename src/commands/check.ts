@@ -21,7 +21,7 @@ If any missing translations are found, the command reports them and exits with a
 
     const linguiConfigFilePath = await this.getConfigFile(projectDir)
     const linguiConfigFileParser = new ConfigParser(projectDir)
-    const translationsChecker = new Translations()
+    const translationsChecker = new Translations(projectDir)
 
     const catalogFiles = await linguiConfigFileParser.parse(linguiConfigFilePath)
     const missingTranslations = await translationsChecker.getMissing(catalogFiles)

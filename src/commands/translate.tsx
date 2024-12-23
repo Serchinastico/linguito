@@ -1,8 +1,10 @@
 import {Args} from '@oclif/core'
+import {render} from 'ink'
 
 import BaseCommand from '../lib/command/base.js'
 import {ConfigParser} from '../lib/lingui/parser.js'
 import {Translations} from '../lib/lingui/translations.js'
+import {AskForTranslations, FilledTranslation} from '../lib/ui/AskForTranslations.js'
 
 export default class Translate extends BaseCommand {
   static args = {
@@ -19,13 +21,30 @@ If any missing translations are found, the command reports them and exits with a
 
     const linguiConfigFilePath = await this.getConfigFile(projectDir)
     const linguiConfigFileParser = new ConfigParser(projectDir)
-    const translationsChecker = new Translations()
+    const translations = new Translations(projectDir)
 
     const catalogFiles = await linguiConfigFileParser.parse(linguiConfigFilePath)
-    const missingTranslations = await translationsChecker.getMissing(catalogFiles)
+    const missingTranslations = await translations.getMissing(catalogFiles)
 
-    for (const translation of missingTranslations) {
-      console.log(translation)
+    if (missingTranslations.length === 0) {
+      this.exit(0)
     }
+
+    let filledTranslations: FilledTranslation[] = []
+    const {unmount, waitUntilExit} = render(
+      <AskForTranslations
+        missingTranslations={missingTranslations}
+        onFinish={(translations) => {
+          filledTranslations = translations
+          unmount()
+        }}
+      />,
+      {
+        exitOnCtrlC: true,
+      },
+    )
+
+    await waitUntilExit()
+    await translations.addMissing(filledTranslations)
   }
 }
