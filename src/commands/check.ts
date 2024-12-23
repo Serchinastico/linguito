@@ -1,15 +1,15 @@
 import {Args} from '@oclif/core'
 import * as path from 'node:path'
 
-import BaseCommand from '../lib/command/base'
-import {invariant} from '../lib/command/invariant'
+import BaseCommand from '../lib/command/base.js'
+import {invariant} from '../lib/command/invariant.js'
 import {canReadFile} from '../lib/fs/fs.js'
-import {TranslationsChecker} from '../lib/lingui/checker'
+import {TranslationsChecker} from '../lib/lingui/checker.js'
 import {ConfigParser} from '../lib/lingui/parser.js'
 
 const SEPARATOR = '\n\t• '
 
-export default class Create extends BaseCommand {
+export default class Check extends BaseCommand {
   static args = {
     projectDir: Args.file({default: '.', description: 'Project root directory', required: false}),
   }
@@ -19,7 +19,7 @@ If any missing translations are found, the command reports them and exits with a
   static summary = 'Check for missing translations in catalog files.'
 
   async run() {
-    const {args} = await this.parse(Create)
+    const {args} = await this.parse(Check)
     const {projectDir} = args
 
     const linguiConfigFilePath = await this.getConfigFile(projectDir)
@@ -39,8 +39,6 @@ If any missing translations are found, the command reports them and exits with a
         exit: -2,
       })
     }
-
-    return Promise.resolve(undefined)
   }
 
   private async getConfigFile(projectDir: string) {
