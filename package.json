@@ -92,7 +92,8 @@
     "release:minor": "release-it --increment=minor",
     "release:patch": "release-it --increment=patch",
     "start": "npm run build && ./bin/run.js",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "types": "dist/index.d.ts",
   "publishConfig": {
