@@ -4,10 +4,11 @@ import fs from 'node:fs/promises'
 type MissingTranslation = {
   file: string
   key: string
+  reference: string
 }
 
-export class TranslationsChecker {
-  async findMissing(catalogFiles: string[]) {
+export class Translations {
+  async getMissing(catalogFiles: string[]) {
     const missingTranslations: MissingTranslation[] = []
 
     for (const catalogFile of catalogFiles) {
@@ -23,7 +24,7 @@ export class TranslationsChecker {
           translation.msgstr.length === 0 ||
           translation.msgstr.some((msgstr) => msgstr === '')
         ) {
-          missingTranslations.push({file: catalogFile, key})
+          missingTranslations.push({file: catalogFile, key, reference: translation.comments?.reference ?? ''})
         }
       }
     }

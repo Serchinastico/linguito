@@ -4,9 +4,7 @@ import BaseCommand from '../lib/command/base.js'
 import {ConfigParser} from '../lib/lingui/parser.js'
 import {Translations} from '../lib/lingui/translations.js'
 
-const SEPARATOR = '\n\t• '
-
-export default class Check extends BaseCommand {
+export default class Translate extends BaseCommand {
   static args = {
     projectDir: Args.file({default: '.', description: 'Project root directory', required: false}),
   }
@@ -16,7 +14,7 @@ If any missing translations are found, the command reports them and exits with a
   static summary = 'Check for missing translations in catalog files.'
 
   async run() {
-    const {args} = await this.parse(Check)
+    const {args} = await this.parse(Translate)
     const {projectDir} = args
 
     const linguiConfigFilePath = await this.getConfigFile(projectDir)
@@ -26,15 +24,8 @@ If any missing translations are found, the command reports them and exits with a
     const catalogFiles = await linguiConfigFileParser.parse(linguiConfigFilePath)
     const missingTranslations = await translationsChecker.getMissing(catalogFiles)
 
-    if (missingTranslations.length > 0) {
-      const missingTranslationsString = missingTranslations
-        .map((translation) => `${translation.file}:"${translation.key}"`)
-        .join(SEPARATOR)
-
-      this.error(`The following translations are missing: ${SEPARATOR}${missingTranslationsString}`, {
-        code: 'missing_translations',
-        exit: -2,
-      })
+    for (const translation of missingTranslations) {
+      console.log(translation)
     }
   }
 }
