@@ -27,7 +27,7 @@ export class Translations {
         po.translations[''][translation.key]['msgstr'] = [translation.translation]
       }
 
-      const buffer = gettextParser.po.compile(po)
+      const buffer = gettextParser.po.compile(po, {foldLength: 0})
       await fs.writeFile(catalogFile, buffer)
     }
   }
