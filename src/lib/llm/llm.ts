@@ -2,8 +2,20 @@ import {createOpenAICompatible} from '@ai-sdk/openai-compatible'
 import {generateText} from 'ai'
 import fs from 'node:fs/promises'
 
+import {invariant} from '../command/invariant.js'
 import {MissingTranslation} from '../lingui/translations.js'
 import {FilledTranslation} from '../ui/AskForTranslations.js'
+
+type ModelsResponse = {
+  data: {
+    id: string
+    object: string
+    owned_by: string
+  }[]
+  object: string
+}
+
+const LLM_URL = 'http://localhost:1234/v1'
 
 const SYSTEM_PROMPT = `You are a professional translator. You are given a text appearing in an application and you need to translate to the desired language. You will be given context and instructions on how to translate the text. Do not answer with anything else than the translated text.`
 const getTranslationPrompt = ({fileContents, key, locale}: {fileContents: string; key: string; locale: string}) =>
@@ -15,12 +27,17 @@ I'm including here the file where the translation appears to give you additional
 ${fileContents}
 \`\`\`
 
-Finally, the untranslated text is: "${key}"`
+Finally, translate the following text: "${key}"`
 
 export class Llm {
   async translate(missingTranslations: MissingTranslation[]): Promise<FilledTranslation[]> {
-    const llmProvider = createOpenAICompatible({baseURL: 'http://localhost:1234/v1', name: 'lmstudio'})
-    const model = llmProvider('gemma-2-9b-it')
+    const llmProvider = createOpenAICompatible({baseURL: LLM_URL, name: 'lmstudio'})
+    const availableModelIds = await this.getAvailableModelIds()
+
+    invariant(availableModelIds.length > 0, 'lmstudio:no_models_found')
+
+    const modelId = availableModelIds[0]
+    const model = llmProvider(modelId)
 
     const translations: FilledTranslation[] = []
 
@@ -41,5 +58,11 @@ export class Llm {
     }
 
     return translations
+  }
+
+  private async getAvailableModelIds(): Promise<string[]> {
+    const response = await fetch('http://localhost:1234/v1/models')
+    const json: ModelsResponse = await response.json()
+    return json.data.map((model) => model.id)
   }
 }
