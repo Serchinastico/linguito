@@ -8,6 +8,7 @@ import {FilledTranslation} from '../ui/AskForTranslations.js'
 export type MissingTranslation = {
   file: string
   key: string
+  locale: string
   reference: {filePath: string; line: number}
 }
 
@@ -53,6 +54,7 @@ export class Translations {
           missingTranslations.push({
             file: catalogFile,
             key,
+            locale: po.headers['Language'],
             reference: {filePath: path.resolve(path.join(this.projectDir, filePath)), line: Number(line)},
           })
         }

@@ -1,4 +1,4 @@
-import {TextInput} from '@inkjs/ui'
+import {defaultTheme, extendTheme, ProgressBar, TextInput, ThemeProvider} from '@inkjs/ui'
 import {Box, Text} from 'ink'
 import fs from 'node:fs'
 import {useEffect, useMemo, useState} from 'react'
@@ -28,7 +28,7 @@ const getContext = (reference: MissingTranslation['reference']): Context => {
   return {currentLine: lines[lineNumber - 1], nextLines, previousLines}
 }
 
-interface Props {
+export interface Props {
   missingTranslations: MissingTranslation[]
   onFinish: (translations: FilledTranslation[]) => void
 }
@@ -53,43 +53,66 @@ export const AskForTranslations = ({missingTranslations, onFinish}: Props) => {
   if (!currentTranslation) return null
 
   return (
-    <Box flexDirection="column">
-      <Box borderColor="green" borderStyle="single" justifyContent="center" paddingX={2}>
-        <Text>
-          Translation {translationIndex + 1} of {missingTranslations.length}
-        </Text>
-      </Box>
+    <ThemeProvider
+      theme={extendTheme(defaultTheme, {
+        components: {ProgressBar: {styles: {completed: () => ({color: 'green'})}}},
+      })}
+    >
+      <Box flexDirection="column" minWidth={80} width={120}>
+        <Box
+          alignItems="center"
+          borderColor="green"
+          borderStyle="double"
+          flexDirection="column"
+          justifyContent="center"
+          paddingX={2}
+        >
+          <Text bold underline>
+            Linguito translation tool
+          </Text>
+          <Text>
+            Translation {translationIndex + 1} of {missingTranslations.length}
+          </Text>
+          <Box width="30%">
+            <ProgressBar value={(translationIndex / missingTranslations.length) * 100} />
+          </Box>
+        </Box>
 
-      <Box flexDirection="row" paddingX={2}>
-        <Text color="blueBright">Key: </Text>
-        <Text>{currentTranslation.key}</Text>
-      </Box>
+        <Box flexDirection="row" paddingX={2}>
+          <Text color="yellow" underline>
+            File:{' '}
+          </Text>
+          <Text underline>
+            {currentTranslation.reference.filePath}
+            {'\n'}
+          </Text>
+        </Box>
 
-      <Box flexDirection="row" paddingX={2}>
-        <Text color="yellow" underline>
-          File:{' '}
-        </Text>
-        <Text underline>
-          {currentTranslation.reference.filePath}
-          {'\n'}
-        </Text>
-      </Box>
+        <Box flexDirection="column" paddingX={3}>
+          <Text color="grey">{context.previousLines.join('\n')}</Text>
+          <Text color="green">{context.currentLine}</Text>
+          <Text color="grey">{context.nextLines.join('\n')}</Text>
+        </Box>
 
-      <Box flexDirection="column" paddingX={3} paddingY={1}>
-        <Text color="grey">{context.previousLines.join('\n')}</Text>
-        <Text color="green">{context.currentLine}</Text>
-        <Text color="grey">{context.nextLines.join('\n')}</Text>
-      </Box>
+        <Box borderColor="grey" borderStyle="single" flexDirection="row" marginTop={2} paddingX={2}>
+          <Box flexDirection="column">
+            <Text color="blueBright">Key: </Text>
+            <Text bold color="blueBright">
+              Translation (<Text color="gray">{currentTranslation.locale}</Text>)?{' '}
+            </Text>
+          </Box>
 
-      <Box>
-        <Text>Enter translation: </Text>
-        <TextInput
-          onSubmit={(value) => {
-            setTranslations((translations) => [...translations, {translation: value, ...currentTranslation}])
-            setTranslationIndex((index) => index + 1)
-          }}
-        />
+          <Box flexDirection="column">
+            <Text>{currentTranslation.key}</Text>
+            <TextInput
+              onSubmit={(value) => {
+                setTranslations((translations) => [...translations, {translation: value, ...currentTranslation}])
+                setTranslationIndex((index) => index + 1)
+              }}
+            />
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   )
 }
