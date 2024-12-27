@@ -13,9 +13,9 @@ describe('check', () => {
     const {error} = await runCommand('check test/fixtures/missing-translations')
 
     expect(error).to.not.be.undefined
-    expect(error!.code).to.be.eq('missing_translations')
+    expect(error!.code).to.equal('missing_translations')
     expect(error!.oclif).to.not.be.undefined
-    expect(error!.oclif!.exit).to.be.eq(-2)
+    expect(error!.oclif!.exit).to.equal(2)
     expect(error!.message).to.contain('test/fixtures/missing-translations/messages.en.po:"{0} of {1}"')
     expect(error!.message).to.contain('test/fixtures/missing-translations/messages.es.po:"{0} - Manual"')
     expect(error!.message).to.contain(
@@ -27,17 +27,17 @@ describe('check', () => {
     const {error} = await runCommand('check test/fixtures/no-lingui-config-file')
 
     expect(error).to.not.be.undefined
-    expect(error!.code).to.be.eq('missing_lingui_config_file')
+    expect(error!.code).to.equal('missing_lingui_config_file')
     expect(error!.oclif).to.not.be.undefined
-    expect(error!.oclif!.exit).to.be.eq(-1)
+    expect(error!.oclif!.exit).to.equal(1)
   })
 
   it('runs check command in a project with unknown catalog file', async () => {
     const {error} = await runCommand('check test/fixtures/unknown-catalog-format')
 
     expect(error).to.not.be.undefined
-    expect(error!.code).to.be.eq('unknown_catalog_file_format')
+    expect(error!.code).to.equal('unknown_catalog_file_format')
     expect(error!.oclif).to.not.be.undefined
-    expect(error!.oclif!.exit).to.be.eq(-1)
+    expect(error!.oclif!.exit).to.equal(1)
   })
 })

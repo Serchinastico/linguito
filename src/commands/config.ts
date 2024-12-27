@@ -11,7 +11,8 @@ import {render} from '../lib/ui/render.js'
 export default class Config extends BaseCommand {
   static description = `- Sets up and manages configuration options to personalize your experience.`
   static examples = [
-    `<%= config.bin %> <%= command.id %> -i # For an interactive config setup.`,
+    `<%= config.bin %> <%= command.id %> -i # For an interactive config setup`,
+    `<%= config.bin %> <%= command.id %> -g llmSettings.provider # To get a config value`,
     `<%= config.bin %> <%= command.id %> -s llmSetings.provider=lmstudio -s llmSettings.url=http://127.0.0.1:1234/v1 # Set multiple config values with one call`,
   ]
   static flags = {
@@ -58,14 +59,14 @@ ${extractKeyPaths(emptyConfig)
       const newConfig = await render(EditConfig, {config})
       store.set(newConfig)
     } else if (get) {
-      const value = getConfigValue(config, get.split('.') as ConfigKeyPath)
+      const value = getConfigValue(config, get.split('.').map((s) => s.trim()) as ConfigKeyPath)
       this.log(`${value}`)
     } else if (set) {
       let newConfig = config
 
       for (const assignment of set) {
         const [keyPath, value] = assignment.split('=')
-        newConfig = setConfigValue(config, keyPath.split('.') as ConfigKeyPath, value)
+        newConfig = setConfigValue(newConfig, keyPath.split('.').map((s) => s.trim()) as ConfigKeyPath, value)
       }
 
       store.set(newConfig)

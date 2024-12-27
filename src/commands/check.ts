@@ -33,7 +33,7 @@ If any missing translations are found, the command reports them and exits with a
 
       this.error(`The following translations are missing: ${SEPARATOR}${missingTranslationsString}`, {
         code: 'missing_translations',
-        exit: -2,
+        exit: 2,
       })
     }
   }
