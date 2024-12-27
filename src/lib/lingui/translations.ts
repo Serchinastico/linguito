@@ -3,14 +3,7 @@ import gettextParser from 'gettext-parser'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import {FilledTranslation} from '../ui/AskForTranslations.js'
-
-export type MissingTranslation = {
-  file: string
-  key: string
-  locale: string
-  reference: {filePath: string; line: number}
-}
+import {FilledTranslation, MissingTranslation} from '../common/types.js'
 
 export class Translations {
   constructor(private projectDir: string) {}

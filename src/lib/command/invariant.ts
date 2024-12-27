@@ -1,12 +1,14 @@
 export const INVARIANT_ERROR_PREFIX: string = 'Invariant failed::'
 
 export type InvariantErrorCode =
+  | 'internal_error'
   | 'invalid_translate_options'
   | 'lmstudio:no_models_found'
   | 'missing_lingui_config_file'
   | 'unknown_catalog_file_format'
 
 export const invariantErrorMessage: Record<InvariantErrorCode, string> = {
+  internal_error: 'Internal error. Please report this in the GitHub repository including as much context as possible.',
   invalid_translate_options:
     "Invalid options passed to 'translate' function. Both interactive and llm options can't be false at the same time.",
   'lmstudio:no_models_found': 'No models loaded in LM Studio',

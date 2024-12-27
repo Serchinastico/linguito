@@ -1,11 +1,10 @@
-import {defaultTheme, extendTheme, ProgressBar, TextInput, ThemeProvider} from '@inkjs/ui'
+import {ProgressBar, TextInput} from '@inkjs/ui'
 import {Box, Text} from 'ink'
 import fs from 'node:fs'
 import {useEffect, useMemo, useState} from 'react'
 
-import {MissingTranslation} from '../lingui/translations.js'
-
-export type FilledTranslation = MissingTranslation & {translation: string}
+import {FilledTranslation, MissingTranslation} from '../../common/types.js'
+import {Theme} from '../Theme.js'
 
 const CODE_CONTEXT_LINES = 5
 
@@ -53,11 +52,7 @@ export const AskForTranslations = ({missingTranslations, onFinish}: Props) => {
   if (!currentTranslation) return null
 
   return (
-    <ThemeProvider
-      theme={extendTheme(defaultTheme, {
-        components: {ProgressBar: {styles: {completed: () => ({color: 'green'})}}},
-      })}
-    >
+    <Theme>
       <Box flexDirection="column" minWidth={80} width={120}>
         <Box
           alignItems="center"
@@ -113,6 +108,6 @@ export const AskForTranslations = ({missingTranslations, onFinish}: Props) => {
           </Box>
         </Box>
       </Box>
-    </ThemeProvider>
+    </Theme>
   )
 }

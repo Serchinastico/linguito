@@ -5,8 +5,8 @@ import {invariant} from '../lib/command/invariant.js'
 import {ConfigParser} from '../lib/lingui/parser.js'
 import {Translations} from '../lib/lingui/translations.js'
 import {Llm} from '../lib/llm/llm.js'
-import {AskForTranslations, Props as AskForTranslationsProps, FilledTranslation} from '../lib/ui/AskForTranslations.js'
 import {render} from '../lib/ui/render.js'
+import {AskForTranslations} from '../lib/ui/translate/AskForTranslations.js'
 
 export default class Translate extends BaseCommand {
   static args = {
@@ -49,7 +49,7 @@ If any missing translations are found, the command reports them and exits with a
     }
 
     if (interactive) {
-      const filledTranslations = await render<FilledTranslation[], AskForTranslationsProps>(AskForTranslations, {
+      const filledTranslations = await render(AskForTranslations, {
         missingTranslations,
       })
       await translations.addMissing(filledTranslations)

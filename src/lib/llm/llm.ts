@@ -3,8 +3,7 @@ import {generateText} from 'ai'
 import fs from 'node:fs/promises'
 
 import {invariant} from '../command/invariant.js'
-import {MissingTranslation} from '../lingui/translations.js'
-import {FilledTranslation} from '../ui/AskForTranslations.js'
+import {FilledTranslation, MissingTranslation} from '../common/types.js'
 
 type ModelsResponse = {
   data: {
