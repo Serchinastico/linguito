@@ -1,3 +1,4 @@
+import {ConfirmInput} from '@inkjs/ui'
 import {Box, Text, useInput} from 'ink'
 import {useMemo, useState} from 'react'
 import {merge} from 'ts-deepmerge'
@@ -14,11 +15,6 @@ export interface Props {
   onFinish: (config: Config) => void
 }
 
-/**
- * TODO:
- * - useInput is always working but it should work in two modes, when selecting items in the menu and when writing a new value
- * - This needs a big refactor, specially the components that render the route
- */
 export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
   const [config, setConfig] = useState<Config>(merge(emptyConfig, currentConfig))
   const [selectedConfigKeys, setSelectedConfigKeys] = useState<ConfigKeyPath>(undefined)
@@ -26,12 +22,12 @@ export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
     () => getAvailableConfigKeys(config, selectedConfigKeys),
     [config, selectedConfigKeys],
   )
+  const [isExiting, setIsExiting] = useState(false)
   const mode = useMemo(() => (availableConfigKeys.length > 0 ? 'select' : 'edit'), [availableConfigKeys])
 
   useInput((input, key) => {
     if (input === 'q') {
-      // TODO Ask for confirmation
-      onFinish(config)
+      setIsExiting(true)
     }
 
     if (mode === 'select' && (key.leftArrow || key.delete)) {
@@ -61,15 +57,24 @@ export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
         <CurrentConfig config={config} />
         <Reference mode={availableConfigKeys.length === 0 ? 'edit' : 'select'} />
 
-        <EditConfigInput
-          availableConfigKeys={availableConfigKeys}
-          onSelect={(key) => setSelectedConfigKeys((keys) => [...(keys ?? []), key] as ConfigKeyPath)}
-          onSubmit={(selectedKeys, value) => {
-            setConfig((config) => setConfigValue(config, selectedKeys, value) as Config)
-            setSelectedConfigKeys(undefined)
-          }}
-          selectedConfigKeys={selectedConfigKeys}
-        />
+        {isExiting ? (
+          <Box flexDirection="row" paddingX={2}>
+            <Text bold color="yellow">
+              Save config?{' '}
+            </Text>
+            <ConfirmInput onCancel={() => onFinish(currentConfig)} onConfirm={() => onFinish(config)} />
+          </Box>
+        ) : (
+          <EditConfigInput
+            availableConfigKeys={availableConfigKeys}
+            onSelect={(key) => setSelectedConfigKeys((keys) => [...(keys ?? []), key] as ConfigKeyPath)}
+            onSubmit={(selectedKeys, value) => {
+              setConfig((config) => setConfigValue(config, selectedKeys, value) as Config)
+              setSelectedConfigKeys(undefined)
+            }}
+            selectedConfigKeys={selectedConfigKeys}
+          />
+        )}
       </Box>
     </Theme>
   )
