@@ -17,12 +17,14 @@ If any missing translations are found, the command reports them and exits with a
   static examples = [`<%= config.bin %> <%= command.id %> ./my-app`]
   static flags = {
     interactive: Flags.boolean({
+      atLeastOne: ['llm', 'interactive'],
       char: 'i',
       default: false,
       description:
         'Runs the translation command in interactive mode. If the llm flag is active, it will let you review AI translations, otherwise it will ask you to fill in the missing translations.',
     }),
     llm: Flags.boolean({
+      atLeastOne: ['llm', 'interactive'],
       char: 'l',
       default: true,
       description: 'Translates all missing copies using a LLM.',

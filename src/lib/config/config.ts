@@ -13,7 +13,7 @@ import {Config, ConfigKey, ConfigKeyPath} from '../common/types.js'
  * @returns The value located at the specified key path within the configuration object, or undefined if the key path
  *          does not exist.
  */
-export const getConfigValue = (config: Config, keys: ConfigKeyPath) => {
+export const getConfigValue = (config: Config, keys: ConfigKeyPath): string | undefined => {
   // @ts-expect-error error
   return keys?.reduce((acc, key) => acc && acc[key], config)
 }
@@ -66,4 +66,21 @@ export const getAvailableConfigKeys = (config: Config, keyPath: ConfigKeyPath): 
 
   if (typeof value === 'string') return []
   else return Object.keys(value) as ConfigKey[]
+}
+
+export const extractKeyPaths = (obj: Config | Record<string, object>, parentKey = ''): string[] => {
+  let paths: string[] = []
+
+  const entries = Object.entries(obj)
+  for (const [key, value] of entries) {
+    const currentKeyPath = parentKey ? `${parentKey}.${key}` : key
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      paths = paths.concat(extractKeyPaths(value as Record<string, object>, currentKeyPath))
+    } else {
+      paths.push(currentKeyPath)
+    }
+  }
+
+  return paths
 }
