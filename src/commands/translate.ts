@@ -51,9 +51,13 @@ If any missing translations are found, the command reports them and exits with a
 
     if (interactive) {
       const filledTranslations = await render(AskForTranslations, {
+        isLlmAssisted: llm,
         missingTranslations,
       })
-      await translations.addMissing(filledTranslations)
+
+      if (filledTranslations) {
+        await translations.addMissing(filledTranslations)
+      }
     } else if (llm) {
       const llm = new Llm()
       const filledTranslations = await llm.translate(missingTranslations)

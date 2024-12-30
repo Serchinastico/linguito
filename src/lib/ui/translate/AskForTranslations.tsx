@@ -1,47 +1,26 @@
-import {ProgressBar, TextInput} from '@inkjs/ui'
-import {Box, Text} from 'ink'
-import fs from 'node:fs'
+import {CodeContext} from '@/lib/ui/translate/CodeContext.js'
+import {TranslateReference} from '@/lib/ui/translate/TranslateReference.js'
+import {TranslationInput} from '@/lib/ui/translate/TranslationInput.js'
+import {ProgressBar} from '@inkjs/ui'
+import {Box, Text, useInput} from 'ink'
 import {useEffect, useMemo, useState} from 'react'
 
 import {FilledTranslation, MissingTranslation} from '../../common/types.js'
 import {Theme} from '../Theme.js'
 
-const CODE_CONTEXT_LINES = 5
-
-type Context = {
-  currentLine: string
-  nextLines: string[]
-  previousLines: string[]
-}
-
-const getContext = (reference: MissingTranslation['reference']): Context => {
-  const fileContents = fs.readFileSync(reference.filePath, 'utf-8')
-
-  const lines = fileContents.split('\n')
-  const lineNumber = reference.line
-  const start = Math.max(0, lineNumber - CODE_CONTEXT_LINES - 1)
-  const end = Math.min(lines.length, lineNumber + CODE_CONTEXT_LINES)
-  const previousLines = lines.slice(start, lineNumber - 1)
-  const nextLines = lines.slice(lineNumber, end)
-
-  return {currentLine: lines[lineNumber - 1], nextLines, previousLines}
-}
-
 export interface Props {
+  isLlmAssisted: boolean
   missingTranslations: MissingTranslation[]
   onFinish: (translations: FilledTranslation[]) => void
 }
 
-export const AskForTranslations = ({missingTranslations, onFinish}: Props) => {
+export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish}: Props) => {
   const [translationIndex, setTranslationIndex] = useState(0)
   const [translations, setTranslations] = useState<FilledTranslation[]>([])
+  const [suggestedTranslation, setSuggestedTranslation] = useState<string | undefined>(undefined)
+  const [isExiting, setIsExiting] = useState(false)
 
   const currentTranslation = useMemo(() => missingTranslations[translationIndex], [translationIndex])
-  const context = useMemo(() => {
-    if (!currentTranslation) return {currentLine: '', nextLines: [], previousLines: []}
-
-    return getContext(currentTranslation.reference)
-  }, [currentTranslation])
 
   useEffect(() => {
     if (translations.length < missingTranslations.length) return
@@ -49,11 +28,29 @@ export const AskForTranslations = ({missingTranslations, onFinish}: Props) => {
     onFinish(translations)
   }, [translations])
 
+  useInput((input, key) => {
+    if (key.escape) {
+      setIsExiting(true)
+    }
+
+    if (key.upArrow) {
+      setTranslationIndex((index) => Math.max(0, index - 1))
+    }
+
+    if (key.downArrow) {
+      setTranslationIndex((index) => Math.min(missingTranslations.length - 1, index + 1))
+    }
+
+    if (isLlmAssisted && key.ctrl && input === 'r') {
+      // Regenerate LLM suggestion
+    }
+  })
+
   if (!currentTranslation) return null
 
   return (
     <Theme>
-      <Box flexDirection="column" minWidth={80} width={120}>
+      <Box flexDirection="column">
         <Box
           alignItems="center"
           borderColor="green"
@@ -83,30 +80,18 @@ export const AskForTranslations = ({missingTranslations, onFinish}: Props) => {
           </Text>
         </Box>
 
-        <Box flexDirection="column" paddingX={3}>
-          <Text color="grey">{context.previousLines.join('\n')}</Text>
-          <Text color="green">{context.currentLine}</Text>
-          <Text color="grey">{context.nextLines.join('\n')}</Text>
-        </Box>
+        <CodeContext reference={currentTranslation?.reference} />
 
-        <Box borderColor="grey" borderStyle="single" flexDirection="row" marginTop={2} paddingX={2}>
-          <Box flexDirection="column">
-            <Text color="blueBright">Key: </Text>
-            <Text bold color="blueBright">
-              Translation (<Text color="gray">{currentTranslation.locale}</Text>)?{' '}
-            </Text>
-          </Box>
+        <TranslateReference mode={isLlmAssisted ? 'llm' : 'manual'} />
 
-          <Box flexDirection="column">
-            <Text>{currentTranslation.key}</Text>
-            <TextInput
-              onSubmit={(value) => {
-                setTranslations((translations) => [...translations, {translation: value, ...currentTranslation}])
-                setTranslationIndex((index) => index + 1)
-              }}
-            />
-          </Box>
-        </Box>
+        <TranslationInput
+          locale={currentTranslation.locale}
+          onSubmit={(value) => {
+            setTranslations((translations) => [...translations, {translation: value, ...currentTranslation}])
+            setTranslationIndex((index) => index + 1)
+          }}
+          translationKey={currentTranslation.key}
+        />
       </Box>
     </Theme>
   )

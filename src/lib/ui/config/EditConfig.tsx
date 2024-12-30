@@ -6,9 +6,9 @@ import {merge} from 'ts-deepmerge'
 import {Config, ConfigKey, ConfigKeyPath, emptyConfig} from '../../common/types.js'
 import {getAvailableConfigKeys, setConfigValue} from '../../config/config.js'
 import {Theme} from '../Theme.js'
+import {ConfigReference} from './ConfigReference.js'
 import {CurrentConfig} from './CurrentConfig.js'
 import {EditConfigInput} from './EditConfigInput.js'
-import {Reference} from './Reference.js'
 
 export interface Props {
   config: Config
@@ -55,7 +55,7 @@ export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
         </Box>
 
         <CurrentConfig config={config} />
-        <Reference mode={availableConfigKeys.length === 0 ? 'edit' : 'select'} />
+        <ConfigReference mode={availableConfigKeys.length === 0 ? 'edit' : 'select'} />
 
         {isExiting ? (
           <Box flexDirection="row" paddingX={2}>
