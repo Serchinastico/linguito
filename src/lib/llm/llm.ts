@@ -1,4 +1,4 @@
-import {createOpenAICompatible} from '@ai-sdk/openai-compatible'
+import {createOpenAICompatible, OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
 import {generateText} from 'ai'
 import fs from 'node:fs/promises'
 
@@ -29,8 +29,22 @@ ${fileContents}
 Finally, translate the following text: "${key}"`
 
 export class Llm {
+  private modelIds!: string[]
+  private provider!: OpenAICompatibleProvider
+
   async translate(missingTranslations: MissingTranslation[]): Promise<FilledTranslation[]> {
-    const llmProvider = createOpenAICompatible({baseURL: LLM_URL, name: 'lmstudio'})
+    const translations: FilledTranslation[] = []
+
+    for (const missingTranslation of missingTranslations) {
+      const translation = await this.translateOne(missingTranslation)
+      translations.push(translation)
+    }
+
+    return translations
+  }
+
+  async translateOne(missingTranslation: MissingTranslation): Promise<FilledTranslation> {
+    const llmProvider = await this.getProvider()
     const availableModelIds = await this.getAvailableModelIds()
 
     invariant(availableModelIds.length > 0, 'lmstudio:no_models_found')
@@ -38,30 +52,36 @@ export class Llm {
     const modelId = availableModelIds[0]
     const model = llmProvider(modelId)
 
-    const translations: FilledTranslation[] = []
+    const fileContents = await fs.readFile(missingTranslation.reference.filePath, 'utf-8')
 
-    for (const missingTranslation of missingTranslations) {
-      const fileContents = await fs.readFile(missingTranslation.reference.filePath, 'utf-8')
+    const {text} = await generateText({
+      model,
+      prompt: getTranslationPrompt({
+        fileContents,
+        key: missingTranslation.key,
+        locale: missingTranslation.locale,
+      }),
+      system: SYSTEM_PROMPT,
+    })
 
-      const {text} = await generateText({
-        model,
-        prompt: getTranslationPrompt({
-          fileContents,
-          key: missingTranslation.key,
-          locale: missingTranslation.locale,
-        }),
-        system: SYSTEM_PROMPT,
-      })
-
-      translations.push({...missingTranslation, translation: text.trim()})
-    }
-
-    return translations
+    return {...missingTranslation, translation: text.trim()}
   }
 
   private async getAvailableModelIds(): Promise<string[]> {
-    const response = await fetch('http://localhost:1234/v1/models')
-    const json: ModelsResponse = await response.json()
-    return json.data.map((model) => model.id)
+    if (!this.modelIds) {
+      const response = await fetch('http://localhost:1234/v1/models')
+      const json: ModelsResponse = await response.json()
+      this.modelIds = json.data.map((model) => model.id)
+    }
+
+    return this.modelIds
+  }
+
+  private async getProvider(): Promise<OpenAICompatibleProvider> {
+    if (!this.provider) {
+      this.provider = createOpenAICompatible({baseURL: LLM_URL, name: 'lmstudio'})
+    }
+
+    return this.provider
   }
 }
