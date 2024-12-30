@@ -1,12 +1,11 @@
+import BaseCommand from '@/lib/command/base.js'
+import {invariant} from '@/lib/command/invariant.js'
+import {ConfigParser} from '@/lib/lingui/parser.js'
+import {Translations} from '@/lib/lingui/translations.js'
+import {Llm} from '@/lib/llm/llm.js'
+import {render} from '@/lib/ui/render.js'
+import {AskForTranslations} from '@/lib/ui/translate/AskForTranslations.js'
 import {Args, Flags} from '@oclif/core'
-
-import BaseCommand from '../lib/command/base.js'
-import {invariant} from '../lib/command/invariant.js'
-import {ConfigParser} from '../lib/lingui/parser.js'
-import {Translations} from '../lib/lingui/translations.js'
-import {Llm} from '../lib/llm/llm.js'
-import {render} from '../lib/ui/render.js'
-import {AskForTranslations} from '../lib/ui/translate/AskForTranslations.js'
 
 export default class Translate extends BaseCommand {
   static args = {

@@ -18,13 +18,14 @@
         "@oclif/plugin-help": "^6",
         "acorn": "^8",
         "ai": "^4",
+        "color-json": "^3.0.5",
         "configstore": "^7",
         "espree": "^10",
         "gettext-parser": "^8",
         "ink": "^5",
         "ollama-ai-provider": "^1",
         "react": "^18",
-        "ts-deepmerge": "^7.0.2"
+        "ts-deepmerge": "^7"
       },
       "bin": {
         "linguito": "bin/run.js"
@@ -6014,6 +6015,15 @@
       },
       "engines": {
         "node": ">=7.0.0"
+      }
+    },
+    "node_modules/color-json": {
+      "version": "3.0.5",
+      "resolved": "https://registry.npmjs.org/color-json/-/color-json-3.0.5.tgz",
+      "integrity": "sha512-DG4zae1GmHDBNsYTUe+GJiDnuKutxs2vVSkPRQqbeA6oEGBRQyRixV+HmIByasCfyf9L0CwHo8vOoiHqe7Lzng==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=12"
       }
     },
     "node_modules/color-name": {

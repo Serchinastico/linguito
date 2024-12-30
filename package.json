@@ -16,6 +16,7 @@
     "@oclif/plugin-help": "^6",
     "acorn": "^8",
     "ai": "^4",
+    "color-json": "^3.0.5",
     "configstore": "^7",
     "espree": "^10",
     "gettext-parser": "^8",
