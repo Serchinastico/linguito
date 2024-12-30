@@ -1,4 +1,4 @@
-import {ConfirmInput} from '@inkjs/ui'
+import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
 import {Box, Text, useInput} from 'ink'
 import {useMemo, useState} from 'react'
 import {merge} from 'ts-deepmerge'
@@ -58,12 +58,11 @@ export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
         <ConfigReference mode={availableConfigKeys.length === 0 ? 'edit' : 'select'} />
 
         {isExiting ? (
-          <Box flexDirection="row" paddingX={2}>
-            <Text bold color="yellow">
-              Save config?{' '}
-            </Text>
-            <ConfirmInput onCancel={() => onFinish(currentConfig)} onConfirm={() => onFinish(config)} />
-          </Box>
+          <ConfirmationPrompt
+            onCancel={() => onFinish(currentConfig)}
+            onConfirm={() => onFinish(config)}
+            prompt="Save config"
+          />
         ) : (
           <EditConfigInput
             availableConfigKeys={availableConfigKeys}

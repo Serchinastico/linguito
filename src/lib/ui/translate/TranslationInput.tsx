@@ -1,7 +1,9 @@
 import {TextInput} from '@inkjs/ui'
 import {Box, Text} from 'ink'
+import {useMemo} from 'react'
 
 interface Props {
+  acceptedTranslation?: string
   isLlmAssisted: boolean
   locale: string
   onSubmit: (translation: string) => void
@@ -9,9 +11,27 @@ interface Props {
   translationKey: string
 }
 
-export const TranslationInput = ({isLlmAssisted, locale, onSubmit, suggestedTranslation, translationKey}: Props) => {
+export const TranslationInput = ({
+  acceptedTranslation,
+  isLlmAssisted,
+  locale,
+  onSubmit,
+  suggestedTranslation,
+  translationKey,
+}: Props) => {
+  const inputValue = useMemo(() => {
+    if (acceptedTranslation) {
+      return acceptedTranslation
+    }
+    if (isLlmAssisted && suggestedTranslation) {
+      return suggestedTranslation
+    }
+
+    return undefined
+  }, [acceptedTranslation, isLlmAssisted, suggestedTranslation])
+
   return (
-    <Box borderColor="grey" borderStyle="single" flexDirection="column" marginTop={2} paddingX={2}>
+    <Box borderColor="grey" borderStyle="single" flexDirection="column" paddingX={2}>
       <Box flexDirection="row">
         <Box minWidth={20}>
           <Text color="blueBright">Key: </Text>
@@ -28,12 +48,11 @@ export const TranslationInput = ({isLlmAssisted, locale, onSubmit, suggestedTran
         </Box>
 
         <TextInput
-          defaultValue={isLlmAssisted && suggestedTranslation ? suggestedTranslation : undefined}
+          defaultValue={inputValue}
           isDisabled={isLlmAssisted && suggestedTranslation === undefined}
-          key={suggestedTranslation}
+          key={`${translationKey} - ${suggestedTranslation}`}
           onSubmit={onSubmit}
-          placeholder={isLlmAssisted ? (suggestedTranslation ?? 'Loading...') : undefined}
-          suggestions={isLlmAssisted && suggestedTranslation ? [suggestedTranslation] : []}
+          placeholder={isLlmAssisted && !suggestedTranslation ? 'Loading...' : undefined}
         />
       </Box>
     </Box>

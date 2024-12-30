@@ -25,7 +25,7 @@ If any missing translations are found, the command reports them and exits with a
     llm: Flags.boolean({
       atLeastOne: ['llm', 'interactive'],
       char: 'l',
-      default: true,
+      default: false,
       description: 'Translates all missing copies using a LLM.',
     }),
   }

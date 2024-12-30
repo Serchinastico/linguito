@@ -1,11 +1,12 @@
-import {Llm} from '@/lib/llm/llm.js'
+import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
 import useArray from '@/lib/ui/hooks/useArray.js'
 import {CodeContext} from '@/lib/ui/translate/CodeContext.js'
 import {TranslateReference} from '@/lib/ui/translate/TranslateReference.js'
 import {TranslationInput} from '@/lib/ui/translate/TranslationInput.js'
-import {ConfirmInput, ProgressBar} from '@inkjs/ui'
+import {useLlmSuggestions} from '@/lib/ui/translate/useLlmSuggestions.js'
+import {ProgressBar} from '@inkjs/ui'
 import {Box, Text, useInput} from 'ink'
-import {useCallback, useEffect, useMemo, useState} from 'react'
+import {useCallback, useMemo, useState} from 'react'
 
 import {FilledTranslation, MissingTranslation} from '../../common/types.js'
 import {Theme} from '../Theme.js'
@@ -16,44 +17,45 @@ export interface Props {
   onFinish: (translations: FilledTranslation[]) => void
 }
 
-type SuggestedTranslation = (FilledTranslation & {loading: false}) | {loading: true}
+type AcceptedTranslation = {isAccepted: boolean; translation: string}
 
 export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish}: Props) => {
   const [translationIndex, setTranslationIndex] = useState(0)
-  const [translations, setTranslations] = useState<FilledTranslation[]>([])
-  const {array: suggestedTranslations, update: updateSuggestedTranslation} = useArray<SuggestedTranslation>(
-    missingTranslations.map(() => ({loading: true})),
+  const {array: translations, update: updateTranslation} = useArray<AcceptedTranslation>(
+    missingTranslations.map(() => ({isAccepted: false, translation: ''})),
   )
   const [isExiting, setIsExiting] = useState(false)
-  const llm = useMemo(() => new Llm(), [])
-
+  const numberOfAcceptedTranslations = useMemo(() => translations.filter((t) => t.isAccepted).length, [translations])
   const currentTranslation = useMemo(() => missingTranslations[translationIndex], [translationIndex])
+  const {regenerateSuggestedTranslation, suggestedTranslations} = useLlmSuggestions({
+    isLlmAssisted,
+    missingTranslations,
+  })
 
-  const generateSuggestedTranslations = useCallback(async () => {
-    missingTranslations.forEach((missingTranslation, index) => {
-      llm.translateOne(missingTranslation).then((translation) => {
-        updateSuggestedTranslation(index, {...translation, loading: false})
-      })
-    })
-  }, [llm, updateSuggestedTranslation])
+  const onExit = useCallback(() => {
+    onFinish(
+      translations.map((translation, index) => ({
+        ...missingTranslations[index],
+        translation: translation.isAccepted ? translation.translation : '',
+      })),
+    )
+  }, [onFinish, missingTranslations, translations])
 
-  const regenerateCurrentSuggestedTranslation = useCallback(async () => {
-    updateSuggestedTranslation(translationIndex, {loading: true})
+  const onSubmit = useCallback(
+    (value: string) => {
+      updateTranslation(translationIndex, {isAccepted: true, translation: value})
+      const firstPendingTranslationIndex = translations.findIndex(
+        (t, index) => translationIndex !== index && !t.isAccepted,
+      )
 
-    const missingTranslation = missingTranslations[translationIndex]
-    const translation = await llm.translateOne(missingTranslation)
-    updateSuggestedTranslation(translationIndex, {...translation, loading: false})
-  }, [llm, translationIndex, updateSuggestedTranslation])
-
-  useEffect(() => {
-    generateSuggestedTranslations().then()
-  }, [generateSuggestedTranslations])
-
-  useEffect(() => {
-    if (translations.length < missingTranslations.length) return
-
-    setIsExiting(true)
-  }, [translations])
+      if (firstPendingTranslationIndex === -1) {
+        onExit()
+      } else {
+        setTranslationIndex(firstPendingTranslationIndex)
+      }
+    },
+    [translationIndex, translations, updateTranslation],
+  )
 
   useInput((input, key) => {
     if (key.escape) {
@@ -69,15 +71,23 @@ export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish
     }
 
     if (isLlmAssisted && key.ctrl && input === 'r') {
-      regenerateCurrentSuggestedTranslation().then()
+      regenerateSuggestedTranslation(translationIndex).then()
     }
   })
 
-  if (!currentTranslation) return null
+  const llmSuggestedTranslation = useMemo(
+    () =>
+      suggestedTranslations[translationIndex].isLoading
+        ? undefined
+        : suggestedTranslations[translationIndex].translation,
+    [suggestedTranslations, translationIndex],
+  )
+  const acceptedTranslation = useMemo(() => {
+    const {translation} = translations[translationIndex]
+    return translation
+  }, [translations, translationIndex])
 
-  const llmSuggestedTranslation = suggestedTranslations[translationIndex].loading
-    ? undefined
-    : suggestedTranslations[translationIndex].translation
+  if (!currentTranslation) return null
 
   return (
     <Theme>
@@ -97,7 +107,7 @@ export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish
             Translation {translationIndex + 1} of {missingTranslations.length}
           </Text>
           <Box width="30%">
-            <ProgressBar value={(translationIndex / missingTranslations.length) * 100} />
+            <ProgressBar value={(numberOfAcceptedTranslations / missingTranslations.length) * 100} />
           </Box>
         </Box>
 
@@ -112,23 +122,20 @@ export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish
         </Box>
 
         {isExiting ? (
-          <Box flexDirection="row" paddingX={2}>
-            <Text bold color="yellow">
-              Save translations?{' '}
-            </Text>
-            <ConfirmInput onCancel={() => onFinish([])} onConfirm={() => onFinish(translations)} />
-          </Box>
+          <ConfirmationPrompt
+            onCancel={() => onFinish([])}
+            onConfirm={onExit}
+            prompt={`Save accepted translations (${numberOfAcceptedTranslations} accepted out of ${translations.length} translations)`}
+          />
         ) : (
           <>
             <CodeContext reference={currentTranslation?.reference} />
             <TranslateReference mode={isLlmAssisted ? 'llm' : 'manual'} />
             <TranslationInput
+              acceptedTranslation={acceptedTranslation}
               isLlmAssisted={isLlmAssisted}
               locale={currentTranslation.locale}
-              onSubmit={(value) => {
-                setTranslations((translations) => [...translations, {translation: value, ...currentTranslation}])
-                setTranslationIndex((index) => index + 1)
-              }}
+              onSubmit={onSubmit}
               suggestedTranslation={llmSuggestedTranslation}
               translationKey={currentTranslation.key}
             />
