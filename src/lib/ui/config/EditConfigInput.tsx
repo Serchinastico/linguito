@@ -1,7 +1,7 @@
+import {ConfigKey, ConfigKeyPath} from '@/lib/common/types.js'
 import {Select, TextInput} from '@inkjs/ui'
 import {Box, Text} from 'ink'
 
-import {ConfigKey, ConfigKeyPath} from '../../common/types.js'
 import {getLabelForConfigKey} from './utils.js'
 
 type Props = InputProps & SelectorProps

@@ -1,10 +1,10 @@
+import {Config, ConfigKey, ConfigKeyPath, emptyConfig} from '@/lib/common/types.js'
+import {getAvailableConfigKeys, setConfigValue} from '@/lib/config/config.js'
 import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
 import {Box, Text, useInput} from 'ink'
 import {useMemo, useState} from 'react'
 import {merge} from 'ts-deepmerge'
 
-import {Config, ConfigKey, ConfigKeyPath, emptyConfig} from '../../common/types.js'
-import {getAvailableConfigKeys, setConfigValue} from '../../config/config.js'
 import {Theme} from '../Theme.js'
 import {ConfigReference} from './ConfigReference.js'
 import {CurrentConfig} from './CurrentConfig.js'

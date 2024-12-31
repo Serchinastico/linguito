@@ -1,7 +1,6 @@
+import {Ast} from '@/lib/ast/ast.js'
+import {invariant} from '@/lib/command/invariant.js'
 import {ArrayExpression, Literal, ObjectExpression, Property, VariableDeclaration, VariableDeclarator} from 'acorn'
-
-import {Ast} from '../ast/ast.js'
-import {invariant} from '../command/invariant.js'
 
 /**
  * Utility class for parsing and processing Lingui configuration files.

@@ -3,7 +3,7 @@
     "declaration": true,
     "module": "ESNext",
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "strict": true,
     "target": "es2022",
     "moduleResolution": "bundler",
@@ -13,4 +13,5 @@
     }
   },
   "include": ["./src/**/*"],
+  "exclude": ["./test/**/*"],
 }

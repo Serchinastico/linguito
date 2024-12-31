@@ -1,9 +1,8 @@
+import {invariant} from '@/lib/command/invariant.js'
+import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
 import {createOpenAICompatible, OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
 import {generateText} from 'ai'
 import fs from 'node:fs/promises'
-
-import {invariant} from '../command/invariant.js'
-import {FilledTranslation, MissingTranslation} from '../common/types.js'
 
 type ModelsResponse = {
   data: {

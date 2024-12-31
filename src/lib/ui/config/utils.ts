@@ -1,4 +1,4 @@
-import {ConfigKey} from '../../common/types.js'
+import {ConfigKey} from '@/lib/common/types.js'
 
 export const getLabelForConfigKey = (key: ConfigKey) => {
   switch (key) {

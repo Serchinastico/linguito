@@ -1,5 +1,5 @@
-import {invariant} from '../command/invariant.js'
-import {Config, ConfigKey, ConfigKeyPath} from '../common/types.js'
+import {invariant} from '@/lib/command/invariant.js'
+import {Config, ConfigKey, ConfigKeyPath} from '@/lib/common/types.js'
 
 /**
  * Retrieves the value from a configuration object at the specified key path.
