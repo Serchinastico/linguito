@@ -16,7 +16,7 @@
     "@oclif/plugin-help": "^6",
     "acorn": "^8",
     "ai": "^4",
-    "color-json": "^3.0.5",
+    "color-json": "^3",
     "configstore": "^7",
     "espree": "^10",
     "gettext-parser": "^8",
@@ -91,6 +91,7 @@
   "repository": "madeja-studio/linguito",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
+    "docs:gif": "vhs docs/demo.tape && mv demo.gif docs",
     "generate:acorn": "tsx scripts/build-acorn-node-types && npm run lint:fix",
     "lint": "eslint \"**/*.{js,ts}\"",
     "lint:commit": "commitlint --edit",

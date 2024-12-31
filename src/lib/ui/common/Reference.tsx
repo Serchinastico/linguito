@@ -19,13 +19,16 @@ export const Reference = ({keys}: Props) => {
     >
       {keys
         .flatMap(({description, key}) => [
-          <Box key={key}>
+          <Box key={`${key}-box`}>
             <Text bold color="yellow">
               {key}
             </Text>
             <Text>: {description}</Text>
           </Box>,
-          <Text color="gray"> | </Text>,
+          <Text color="gray" key={`${key}-text`}>
+            {' '}
+            |{' '}
+          </Text>,
         ])
         .slice(0, -1)}
     </Box>

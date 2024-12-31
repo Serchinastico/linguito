@@ -1,9 +1,7 @@
 import BaseCommand from '@/lib/command/base.js'
-import {ConfigKeyPath, Config as ConfigType, emptyConfig} from '@/lib/common/types.js'
-import {extractKeyPaths, setConfigValue} from '@/lib/config/config.js'
+import {ConfigKeyPath} from '@/lib/common/types.js'
+import {ConfigManager} from '@/lib/config/config-manager.js'
 import {Args} from '@oclif/core'
-import Configstore from 'configstore'
-import fs from 'node:fs/promises'
 
 export default class Set extends BaseCommand {
   static args = {
@@ -14,7 +12,7 @@ export default class Set extends BaseCommand {
     }),
   }
   static description = `Sets a new value for the config. Use the format: <key>=<value>. Allowed keys are listed below:
-${extractKeyPaths(emptyConfig)
+${ConfigManager.getAllKeyPaths()
   .map((key) => `- ${key}`)
   .join('\n')}
 `
@@ -28,16 +26,13 @@ ${extractKeyPaths(emptyConfig)
   async run() {
     const {argv} = await this.parse(Set)
 
-    const packageJson = JSON.parse(await fs.readFile('./package.json', 'utf8'))
-    const store = new Configstore(packageJson.name, emptyConfig)
-
-    let newConfig = store.all as ConfigType
+    const config = new ConfigManager()
 
     for (const assignment of argv as string[]) {
       const [keyPath, value] = assignment.split('=')
-      newConfig = setConfigValue(newConfig, keyPath.split('.').map((s) => s.trim()) as ConfigKeyPath, value)
+      config.set(keyPath.split('.').map((s) => s.trim()) as ConfigKeyPath, value)
     }
 
-    store.set(newConfig)
+    config.save()
   }
 }

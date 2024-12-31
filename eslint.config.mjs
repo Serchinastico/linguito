@@ -24,7 +24,7 @@ export default tseslint.config(
   pluginChaiFriendly.configs.recommendedFlat,
   perfectionist.configs['recommended-natural'],
   {
-    ignores: ['dist', 'bin', 'src/templates', 'integration-test-project'],
+    ignores: ['dist', 'bin', 'test/fixtures'],
   },
   {
     plugins: {

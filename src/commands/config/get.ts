@@ -1,10 +1,8 @@
 import BaseCommand from '@/lib/command/base.js'
-import {ConfigKeyPath, Config as ConfigType, emptyConfig} from '@/lib/common/types.js'
-import {extractKeyPaths, getConfigValue} from '@/lib/config/config.js'
+import {ConfigKeyPath} from '@/lib/common/types.js'
+import {ConfigManager} from '@/lib/config/config-manager.js'
 import {Args, Flags} from '@oclif/core'
 import cj from 'color-json'
-import Configstore from 'configstore'
-import fs from 'node:fs/promises'
 
 export default class Get extends BaseCommand {
   static args = {
@@ -14,7 +12,7 @@ export default class Get extends BaseCommand {
     }),
   }
   static description = `Prints out the config value for the selected config key or the entire config if no key is provided. Allowed keys are listed below: 
-  ${extractKeyPaths(emptyConfig)
+  ${ConfigManager.getAllKeyPaths()
     .map((key) => `- ${key}`)
     .join('\n')}`
   static examples = [`<%= config.bin %> <%= command.id %> llmSettings.provider`]
@@ -29,12 +27,10 @@ export default class Get extends BaseCommand {
     const {configPathKey} = args
     const {color} = flags
 
-    const packageJson = JSON.parse(await fs.readFile('./package.json', 'utf8'))
-    const store = new Configstore(packageJson.name, emptyConfig)
-    const config = store.all as ConfigType
+    const config = new ConfigManager()
 
     if (configPathKey) {
-      const value = getConfigValue(config, configPathKey.split('.').map((s) => s.trim()) as ConfigKeyPath)
+      const value = config.get(configPathKey.split('.').map((s) => s.trim()) as ConfigKeyPath)
       this.log(`${value}`)
     } else {
       this.log(color ? cj(config) : JSON.stringify(config, null, 2))

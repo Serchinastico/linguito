@@ -1,5 +1,6 @@
 import BaseCommand from '@/lib/command/base.js'
 import {invariant} from '@/lib/command/invariant.js'
+import {ConfigManager} from '@/lib/config/config-manager.js'
 import {ConfigParser} from '@/lib/lingui/parser.js'
 import {Translations} from '@/lib/lingui/translations.js'
 import {Llm} from '@/lib/llm/llm.js'
@@ -49,6 +50,8 @@ If any missing translations are found, the command reports them and exits with a
       this.exit(0)
     }
 
+    const configManager = new ConfigManager()
+
     if (interactive) {
       const filledTranslations = await render(AskForTranslations, {
         isLlmAssisted: llm,
@@ -59,7 +62,7 @@ If any missing translations are found, the command reports them and exits with a
         await translations.addMissing(filledTranslations)
       }
     } else if (llm) {
-      const llm = new Llm()
+      const llm = new Llm(configManager.config)
       const filledTranslations = await llm.translate(missingTranslations)
       await translations.addMissing(filledTranslations)
     }

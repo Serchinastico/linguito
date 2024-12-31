@@ -1,5 +1,5 @@
 import {invariant} from '@/lib/command/invariant.js'
-import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
+import {Config, FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
 import {createOpenAICompatible, OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
 import {generateText} from 'ai'
 import fs from 'node:fs/promises'
@@ -31,6 +31,8 @@ export class Llm {
   private modelIds!: string[]
   private provider!: OpenAICompatibleProvider
 
+  constructor(private config: Config) {}
+
   async translate(missingTranslations: MissingTranslation[]): Promise<FilledTranslation[]> {
     const translations: FilledTranslation[] = []
 
@@ -60,7 +62,7 @@ export class Llm {
         key: missingTranslation.key,
         locale: missingTranslation.locale,
       }),
-      system: SYSTEM_PROMPT,
+      system: this.config.systemPrompt ?? SYSTEM_PROMPT,
     })
 
     return {...missingTranslation, translation: text.trim()}
@@ -68,7 +70,7 @@ export class Llm {
 
   private async getAvailableModelIds(): Promise<string[]> {
     if (!this.modelIds) {
-      const response = await fetch('http://localhost:1234/v1/models')
+      const response = await fetch(`${this.config.llmSettings?.url ?? LLM_URL}/models`)
       const json: ModelsResponse = await response.json()
       this.modelIds = json.data.map((model) => model.id)
     }
@@ -78,7 +80,10 @@ export class Llm {
 
   private async getProvider(): Promise<OpenAICompatibleProvider> {
     if (!this.provider) {
-      this.provider = createOpenAICompatible({baseURL: LLM_URL, name: 'lmstudio'})
+      this.provider = createOpenAICompatible({
+        baseURL: this.config.llmSettings?.url ?? LLM_URL,
+        name: this.config.llmSettings?.provider ?? 'lmstudio',
+      })
     }
 
     return this.provider

@@ -1,4 +1,5 @@
 import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
+import {ConfigManager} from '@/lib/config/config-manager.js'
 import {Llm} from '@/lib/llm/llm.js'
 import useArray from '@/lib/ui/hooks/useArray.js'
 import {useCallback, useEffect, useMemo} from 'react'
@@ -24,7 +25,8 @@ export const useLlmSuggestions = ({isLlmAssisted, missingTranslations}: Props) =
   const {array: suggestedTranslations, update: updateSuggestedTranslation} = useArray<SuggestedTranslation>(
     missingTranslations.map(() => ({isLoading: true})),
   )
-  const llm = useMemo(() => new Llm(), [])
+  const configManager = useMemo(() => new ConfigManager(), [])
+  const llm = useMemo(() => new Llm(configManager.config), [])
 
   const generateSuggestedTranslations = useCallback(async () => {
     if (!isLlmAssisted) return

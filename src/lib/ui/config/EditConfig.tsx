@@ -1,9 +1,8 @@
-import {Config, ConfigKey, ConfigKeyPath, emptyConfig} from '@/lib/common/types.js'
-import {getAvailableConfigKeys, setConfigValue} from '@/lib/config/config.js'
+import {Config, ConfigKey, ConfigKeyPath} from '@/lib/common/types.js'
+import {ConfigManager} from '@/lib/config/config-manager.js'
 import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
 import {Box, Text, useInput} from 'ink'
 import {useMemo, useState} from 'react'
-import {merge} from 'ts-deepmerge'
 
 import {Theme} from '../Theme.js'
 import {ConfigReference} from './ConfigReference.js'
@@ -16,11 +15,11 @@ export interface Props {
 }
 
 export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
-  const [config, setConfig] = useState<Config>(merge(emptyConfig, currentConfig))
   const [selectedConfigKeys, setSelectedConfigKeys] = useState<ConfigKeyPath>(undefined)
+  const configManager = useMemo(() => new ConfigManager(), [])
   const availableConfigKeys = useMemo<ConfigKey[]>(
-    () => getAvailableConfigKeys(config, selectedConfigKeys),
-    [config, selectedConfigKeys],
+    () => configManager.getAvailableKeyPaths(selectedConfigKeys),
+    [configManager.config, selectedConfigKeys],
   )
   const [isExiting, setIsExiting] = useState(false)
   const mode = useMemo(() => (availableConfigKeys.length > 0 ? 'select' : 'edit'), [availableConfigKeys])
@@ -54,13 +53,13 @@ export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
           </Text>
         </Box>
 
-        <CurrentConfig config={config} />
+        <CurrentConfig config={configManager.config} />
         <ConfigReference mode={availableConfigKeys.length === 0 ? 'edit' : 'select'} />
 
         {isExiting ? (
           <ConfirmationPrompt
             onCancel={() => onFinish(currentConfig)}
-            onConfirm={() => onFinish(config)}
+            onConfirm={() => onFinish(configManager.config)}
             prompt="Save config"
           />
         ) : (
@@ -68,7 +67,7 @@ export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
             availableConfigKeys={availableConfigKeys}
             onSelect={(key) => setSelectedConfigKeys((keys) => [...(keys ?? []), key] as ConfigKeyPath)}
             onSubmit={(selectedKeys, value) => {
-              setConfig((config) => setConfigValue(config, selectedKeys, value) as Config)
+              configManager.set(selectedKeys, value)
               setSelectedConfigKeys(undefined)
             }}
             selectedConfigKeys={selectedConfigKeys}
