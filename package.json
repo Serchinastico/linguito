@@ -91,7 +91,7 @@
   "repository": "madeja-studio/linguito",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
-    "docs:gif": "vhs docs/demo.tape && mv demo.gif docs",
+    "docs:gif": "tsx scripts/backup-catalog-demo-files backup && vhs docs/demo.tape && mv demo.gif docs && tsx scripts/backup-catalog-demo-files restore",
     "generate:acorn": "tsx scripts/build-acorn-node-types && npm run lint:fix",
     "lint": "eslint \"**/*.{js,ts}\"",
     "lint:commit": "commitlint --edit",
