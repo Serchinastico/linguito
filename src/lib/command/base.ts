@@ -21,7 +21,7 @@ export default abstract class BaseCommand extends Command {
    * and ensures that the file is readable.
    *
    * @param projectDir - The directory path of the project where the Lingui configuration file is expected.
-   * @return A promise that resolves to the absolute path of the Lingui configuration file.
+   * @return A promise that resolves to both the project directory and the resolved config file path.
    * @throws Throws an error if the configuration file is not readable or missing.
    */
   protected async getConfigFile(projectDir: string) {
@@ -31,6 +31,6 @@ export default abstract class BaseCommand extends Command {
 
     invariant(isLinguiConfigFileReadable, 'missing_lingui_config_file')
 
-    return linguiConfigFilePath
+    return {directory: path.dirname(linguiConfigFilePath), file: linguiConfigFilePath}
   }
 }

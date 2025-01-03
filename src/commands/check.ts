@@ -18,9 +18,9 @@ If any missing translations are found, the command reports them and exits with a
     const {args} = await this.parse(Check)
     const {projectDir} = args
 
-    const linguiConfigFilePath = await this.getConfigFile(projectDir)
-    const linguiConfigFileParser = new ConfigParser(projectDir)
-    const translationsChecker = new Translations(projectDir)
+    const {directory, file: linguiConfigFilePath} = await this.getConfigFile(projectDir)
+    const linguiConfigFileParser = new ConfigParser(directory)
+    const translationsChecker = new Translations(directory)
 
     const catalogFiles = await linguiConfigFileParser.parse(linguiConfigFilePath)
     const missingTranslations = await translationsChecker.getMissing(catalogFiles)

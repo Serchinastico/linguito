@@ -39,9 +39,9 @@ If any missing translations are found, the command reports them and exits with a
 
     invariant(interactive || llm, 'invalid_translate_options')
 
-    const linguiConfigFilePath = await this.getConfigFile(projectDir)
-    const linguiConfigFileParser = new ConfigParser(projectDir)
-    const translations = new Translations(projectDir)
+    const {directory, file: linguiConfigFilePath} = await this.getConfigFile(projectDir)
+    const linguiConfigFileParser = new ConfigParser(directory)
+    const translations = new Translations(directory)
 
     const catalogFiles = await linguiConfigFileParser.parse(linguiConfigFilePath)
     const missingTranslations = await translations.getMissing(catalogFiles)

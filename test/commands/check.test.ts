@@ -9,6 +9,12 @@ describe('check', () => {
     expect(error).to.be.undefined
   })
 
+  it('runs check command when lingui config file is specified', async () => {
+    const {error} = await runCommand('check test/fixtures/all-translations-included/lingui.config.js')
+
+    expect(error).to.be.undefined
+  })
+
   it('runs check command in a project with missing translations', async () => {
     const {error} = await runCommand('check test/fixtures/missing-translations')
 
