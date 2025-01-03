@@ -22,6 +22,7 @@
         "espree": "^10",
         "gettext-parser": "^8",
         "ink": "^5",
+        "npm-check-updates": "^17.1.13",
         "ollama-ai-provider": "^1",
         "react": "^18",
         "ts-deepmerge": "^7"
@@ -11770,6 +11771,20 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/npm-check-updates": {
+      "version": "17.1.13",
+      "resolved": "https://registry.npmjs.org/npm-check-updates/-/npm-check-updates-17.1.13.tgz",
+      "integrity": "sha512-m9Woo2J5XVab0VcQpYvrQ0hx3ySI1mGbiHR595mc6Lr1/FIaTWvv+oU+T1WKSfXRiluKC/V5P6Bdk5agaYpqqg==",
+      "license": "Apache-2.0",
+      "bin": {
+        "ncu": "build/cli.js",
+        "npm-check-updates": "build/cli.js"
+      },
+      "engines": {
+        "node": "^18.18.0 || >=20.0.0",
+        "npm": ">=8.12.1"
       }
     },
     "node_modules/npm-run-path": {

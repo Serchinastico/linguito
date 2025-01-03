@@ -21,6 +21,7 @@
     "espree": "^10",
     "gettext-parser": "^8",
     "ink": "^5",
+    "npm-check-updates": "^17.1.13",
     "ollama-ai-provider": "^1",
     "react": "^18",
     "ts-deepmerge": "^7"
@@ -97,6 +98,8 @@
   "repository": "madeja-studio/linguito",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b && tsc-alias",
+    "deps": "npm-check-updates",
+    "deps:update": "npm-check-updates -u",
     "docs:gif": "tsx scripts/backup-catalog-demo-files backup && vhs docs/demo.tape && mv demo.gif docs && tsx scripts/backup-catalog-demo-files restore",
     "generate:acorn": "tsx scripts/build-acorn-node-types && npm run lint:fix",
     "lint": "eslint \"**/*.{js,ts}\"",
