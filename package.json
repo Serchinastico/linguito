@@ -53,6 +53,8 @@
     "release-it": "^17",
     "shx": "^0.3.3",
     "ts-morph": "^24",
+    "tsc-alias": "^1",
+    "tsconfig-paths": "^4",
     "tsx": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8",
@@ -90,7 +92,7 @@
   },
   "repository": "madeja-studio/linguito",
   "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
+    "build": "shx rm -rf dist && tsc -b && tsc-alias",
     "docs:gif": "tsx scripts/backup-catalog-demo-files backup && vhs docs/demo.tape && mv demo.gif docs && tsx scripts/backup-catalog-demo-files restore",
     "generate:acorn": "tsx scripts/build-acorn-node-types && npm run lint:fix",
     "lint": "eslint \"**/*.{js,ts}\"",
