@@ -69,12 +69,17 @@
   ],
   "homepage": "https://github.com/madeja-studio/linguito",
   "keywords": [
-    "oclif",
     "lingui",
     "i18n",
+    "internacionalization",
+    "l10n",
+    "localization",
+    "translation",
     "cli",
     "utility",
-    "assistant"
+    "assistant",
+    "llm",
+    "oclif"
   ],
   "license": "MIT",
   "main": "dist/index.js",
