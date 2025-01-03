@@ -54,7 +54,6 @@
     "shx": "^0.3.3",
     "ts-morph": "^24",
     "tsc-alias": "^1",
-    "tsconfig-paths": "^4",
     "tsx": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8",
