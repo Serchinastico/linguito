@@ -4,6 +4,20 @@ Linguito is a CLI tool designed to enhance the capabilities of [Lingui](https://
 
 ![Video showing the translation feature of this tool](./docs/demo.gif)
 
+## Installation
+
+Install Linguito globally to start using it:
+
+```shell
+npm install -g linguito
+```
+
+Or run with [npx](https://docs.npmjs.com/cli/v7/commands/npx) to avoid a global installation.
+
+```shell
+npx linguito
+```
+
 ## Usage
 
 ### `linguito check`
