@@ -15,6 +15,7 @@
     "@madeja-studio/cepillo": "^0.4.0",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
+    "@oclif/plugin-plugins": "^5",
     "ai": "^4",
     "color-json": "^3",
     "configstore": "^7",
