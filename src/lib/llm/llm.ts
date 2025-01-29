@@ -1,19 +1,10 @@
 import {invariant} from '@/lib/command/invariant.js'
 import {Config, FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
-import {createOpenAICompatible, OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
+import {LlmService} from '@/lib/llm/services/llm-service.js'
+import {LmStudio} from '@/lib/llm/services/lmstudio.js'
+import {Ollama} from '@/lib/llm/services/ollama.js'
 import {generateText} from 'ai'
 import fs from 'node:fs/promises'
-
-type ModelsResponse = {
-  data: {
-    id: string
-    object: string
-    owned_by: string
-  }[]
-  object: string
-}
-
-const LLM_URL = 'http://localhost:1234/v1'
 
 const SYSTEM_PROMPT = `You are a professional translator. You are given a text appearing in an application and you need to translate to the desired language. You will be given context and instructions on how to translate the text. Do not answer with anything else than the translated text.`
 const getTranslationPrompt = ({fileContents, key, locale}: {fileContents: string; key: string; locale: string}) =>
@@ -28,8 +19,7 @@ ${fileContents}
 Finally, translate the following text: "${key}"`
 
 export class Llm {
-  private modelIds!: string[]
-  private provider!: OpenAICompatibleProvider
+  private service!: LlmService
 
   constructor(private config: Config) {}
 
@@ -45,13 +35,14 @@ export class Llm {
   }
 
   async translateOne(missingTranslation: MissingTranslation): Promise<FilledTranslation> {
-    const llmProvider = await this.getProvider()
-    const availableModelIds = await this.getAvailableModelIds()
+    const llmService = await this.getService()
+    const provider = await llmService.getProvider()
+    const availableModelIds = await llmService.getAvailableModelIds()
 
-    invariant(availableModelIds.length > 0, 'lmstudio:no_models_found')
+    invariant(availableModelIds.length > 0, 'llm:no_models_found')
 
     const modelId = availableModelIds[0]
-    const model = llmProvider(modelId)
+    const model = provider(modelId)
 
     const fileContents = await fs.readFile(missingTranslation.reference.filePath, 'utf-8')
 
@@ -68,24 +59,18 @@ export class Llm {
     return {...missingTranslation, translation: text.trim()}
   }
 
-  private async getAvailableModelIds(): Promise<string[]> {
-    if (!this.modelIds) {
-      const response = await fetch(`${this.config.llmSettings?.url ?? LLM_URL}/models`)
-      const json: ModelsResponse = await response.json()
-      this.modelIds = json.data.map((model) => model.id)
+  private async getService(): Promise<LlmService> {
+    if (!this.service) {
+      switch (this.config.llmSettings?.provider) {
+        case 'lmstudio':
+          this.service = new LmStudio(this.config)
+          break
+        case 'ollama':
+          this.service = new Ollama(this.config)
+          break
+      }
     }
 
-    return this.modelIds
-  }
-
-  private async getProvider(): Promise<OpenAICompatibleProvider> {
-    if (!this.provider) {
-      this.provider = createOpenAICompatible({
-        baseURL: this.config.llmSettings?.url ?? LLM_URL,
-        name: this.config.llmSettings?.provider ?? 'lmstudio',
-      })
-    }
-
-    return this.provider
+    return this.service
   }
 }
