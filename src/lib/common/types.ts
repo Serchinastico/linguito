@@ -1,6 +1,6 @@
 export interface Config {
   llmSettings?: {
-    provider: 'lmstudio'
+    provider: 'lmstudio' | 'ollama'
     url: string
   }
   systemPrompt?: string
@@ -8,7 +8,7 @@ export interface Config {
 
 export const emptyConfig: Config = {
   llmSettings: {
-    provider: 'lmstudio',
+    provider: 'ollama',
     url: '',
   },
   systemPrompt: '',
