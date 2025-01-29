@@ -4,12 +4,13 @@
     "module": "ESNext",
     "outDir": "dist",
     "rootDir": "src",
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["./src/**/*"],
