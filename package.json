@@ -12,10 +12,9 @@
     "@ai-sdk/openai-compatible": "^0.1.6",
     "@inkjs/ui": "^2",
     "@lingui/conf": "^5",
-    "@madeja-studio/cepillo": "^0.3.0",
+    "@madeja-studio/cepillo": "^0.4.0",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
-    "acorn": "^8",
     "ai": "^4",
     "color-json": "^3",
     "configstore": "^7",
@@ -59,7 +58,7 @@
     "tsx": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8",
-    "vitest": "^2"
+    "vitest": "^3"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -102,11 +101,10 @@
     "deps": "npm-check-updates",
     "deps:update": "npm-check-updates -u",
     "docs:gif": "tsx scripts/backup-catalog-demo-files backup && vhs docs/demo.tape && mv demo.gif docs && tsx scripts/backup-catalog-demo-files restore",
-    "generate:acorn": "tsx scripts/build-acorn-node-types && npm run lint:fix",
     "lint": "eslint \"**/*.{js,ts}\"",
     "lint:commit": "commitlint --edit",
     "lint:fix": "eslint \"**/*.{js,ts}\" --fix",
-    "prepare": "lefthook install && npm run generate:acorn",
+    "prepare": "lefthook install",
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest",
     "release": "release-it",
