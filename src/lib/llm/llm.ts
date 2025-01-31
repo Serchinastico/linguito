@@ -3,8 +3,9 @@ import {Config, FilledTranslation, MissingTranslation} from '@/lib/common/types.
 import {LlmService} from '@/lib/llm/services/llm-service.js'
 import {LmStudio} from '@/lib/llm/services/lmstudio.js'
 import {Ollama} from '@/lib/llm/services/ollama.js'
-import {generateText} from 'ai'
+import {generateObject} from 'ai'
 import fs from 'node:fs/promises'
+import {z} from 'zod'
 
 const SYSTEM_PROMPT = `You are a professional translator. You are given a text appearing in an application and you need to translate to the desired language. You will be given context and instructions on how to translate the text. Do not answer with anything else than the translated text. Your response will only contained the translated text, with no extra characters, punctuation or information.`
 
@@ -43,21 +44,22 @@ export class Llm {
     invariant(availableModelIds.length > 0, 'llm:no_models_found')
 
     const modelId = availableModelIds[0]
-    const model = provider(modelId)
+    const model = provider(modelId, {structuredOutputs: true})
 
     const fileContents = await fs.readFile(missingTranslation.reference.filePath, 'utf-8')
 
-    const {text} = await generateText({
+    const {object} = await generateObject({
       model,
       prompt: getTranslationPrompt({
         fileContents,
         key: missingTranslation.key,
         locale: missingTranslation.locale,
       }),
+      schema: z.object({translation: z.string()}),
       system: this.config.systemPrompt ?? SYSTEM_PROMPT,
     })
 
-    return {...missingTranslation, translation: text.trim()}
+    return {...missingTranslation, translation: object.translation.trim()}
   }
 
   private async getService(): Promise<LlmService> {
