@@ -13,13 +13,11 @@ type LmStudioModelsResponse = {
   object: string
 }
 
-export class LmStudio extends LlmService {
+export class LmStudio implements LlmService {
   private modelIds!: string[]
   private provider!: LlmProvider
 
-  constructor(private config: Config) {
-    super()
-  }
+  constructor(private config: Config) {}
 
   async getAvailableModelIds(): Promise<string[]> {
     if (!this.modelIds) {

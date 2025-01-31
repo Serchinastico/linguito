@@ -10,13 +10,11 @@ type OllamaModelsResponse = {
 
 const OLLAMA_DEFAULT_URL = 'http://localhost:11434/api'
 
-export class Ollama extends LlmService {
+export class Ollama implements LlmService {
   private modelIds!: string[]
   private provider!: LlmProvider
 
-  constructor(private config: Config) {
-    super()
-  }
+  constructor(private config: Config) {}
 
   async getAvailableModelIds(): Promise<string[]> {
     if (!this.modelIds) {
