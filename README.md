@@ -20,6 +20,19 @@ npx linguito
 
 ## Usage
 
+If you want to use Linguito AI capabilities, you will need to configure it to connect the app to connect to your preferred LLM service.
+
+### Local LLM
+
+To use Linguito with a local LLM, ensure you have a running and accessible LLM service. Currently, Linguito supports the following local LLMs:
+
+- [LM Studio](https://lmstudio.ai/)
+- [Ollama](https://ollama.com/)
+
+Choose your preferred provider, install a model and connect it with Linguito by running `linguito config`. You will need to configure the specific provider you chose (like `lmstudio` or `ollama`) and its address.
+
+## Commands
+
 ### `linguito check`
 
 Verifies your project's translation files to ensure all translations are complete. It scans the catalog files defined in `lingui.config.js` and reports any missing translations in the format `<file>:"<missing_key>"`.
