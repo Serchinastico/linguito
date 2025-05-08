@@ -21,7 +21,7 @@ export class LmStudio implements LlmService {
 
   async getAvailableModelIds(): Promise<string[]> {
     if (!this.modelIds) {
-      const response = await fetch(`${this.config.llmSettings?.url ?? LM_STUDIO_DEFAULT_URL}/models`)
+      const response = await fetch(`${this.config.llmSettings?.url ?? LM_STUDIO_DEFAULT_URL}/v1/models`)
       const json: LmStudioModelsResponse = await response.json()
       this.modelIds = json.data.map((model) => model.id)
     }
