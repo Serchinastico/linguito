@@ -1,4 +1,23 @@
+import {CopyOptions} from 'node:fs'
 import fs from 'node:fs/promises'
+
+const cpIfExists = async (source: string, destination: string, options: CopyOptions = {}) => {
+  try {
+    await fs.access(source)
+    await fs.cp(source, destination, options)
+  } catch {
+    /* empty */
+  }
+}
+
+const rmIfExists = async (path: string) => {
+  try {
+    await fs.access(path)
+    await fs.rm(path)
+  } catch {
+    /* empty */
+  }
+}
 
 /**
  * Asynchronously creates backups of test fixture files for the specified test case.
@@ -14,10 +33,10 @@ import fs from 'node:fs/promises'
  *                  to back up (e.g., 'missing-translations').
  * @returns A promise that resolves when all backup operations are complete.
  */
-export const backupCatalogTestFiles = async (fixture: 'missing-translations') => {
+export const backupCatalogTestFiles = async (fixture: string) => {
   await Promise.all([
-    fs.cp(`test/fixtures/${fixture}/messages.en.po`, `test/fixtures/${fixture}/messages.en.po.backup`, {}),
-    fs.cp(`test/fixtures/${fixture}/messages.es.po`, `test/fixtures/${fixture}/messages.es.po.backup`, {}),
+    cpIfExists(`test/fixtures/${fixture}/messages.en.po`, `test/fixtures/${fixture}/messages.en.po.backup`),
+    cpIfExists(`test/fixtures/${fixture}/messages.es.po`, `test/fixtures/${fixture}/messages.es.po.backup`),
   ])
 }
 
@@ -32,14 +51,14 @@ export const backupCatalogTestFiles = async (fixture: 'missing-translations') =>
  *                  Example: 'missing-translations'
  * @returns A promise that resolves once the restoration process is complete.
  */
-export const restoreCatalogTestFiles = async (fixture: 'missing-translations') => {
+export const restoreCatalogTestFiles = async (fixture: string) => {
   await Promise.all([
-    fs.cp(`test/fixtures/${fixture}/messages.en.po.backup`, `test/fixtures/${fixture}/messages.en.po`, {}),
-    fs.cp(`test/fixtures/${fixture}/messages.es.po.backup`, `test/fixtures/${fixture}/messages.es.po`, {}),
+    cpIfExists(`test/fixtures/${fixture}/messages.en.po.backup`, `test/fixtures/${fixture}/messages.en.po`),
+    cpIfExists(`test/fixtures/${fixture}/messages.es.po.backup`, `test/fixtures/${fixture}/messages.es.po`),
   ])
 
   await Promise.all([
-    fs.rm(`test/fixtures/${fixture}/messages.en.po.backup`),
-    fs.rm(`test/fixtures/${fixture}/messages.es.po.backup`),
+    rmIfExists(`test/fixtures/${fixture}/messages.en.po.backup`),
+    rmIfExists(`test/fixtures/${fixture}/messages.es.po.backup`),
   ])
 }

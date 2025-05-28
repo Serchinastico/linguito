@@ -81,6 +81,19 @@ linguito translate ~/Development/my-app --llm
 linguito translate ~/Development/my-app --llm --interactive
 ```
 
+### `linguito format`
+
+Reads and cleans the project's catalog files to ensure consistency and readability. It removes empty translations and normalizes the format of the catalog files, making them easier to maintain. This command is particularly useful before committing translation changes to version control or when preparing files for translation work.
+
+#### Examples
+
+```shell
+# Format catalog files in the current directory project
+linguito format
+
+# Or specify a custom project directory
+linguito format ~/Development/my-app
+```
 
 ## Development
 

@@ -4,9 +4,14 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
+import {GetTextParser} from '@/lib/lingui/gettext-parser'
 
 export class Translations {
-  constructor(private projectDir: string) {}
+  private parser: GetTextParser
+
+  constructor(private projectDir: string) {
+    this.parser = new GetTextParser()
+  }
 
   async addMissing(translations: FilledTranslation[]) {
     const translationsByCatalog = groupBy(translations, (translation) => translation.file)
@@ -25,7 +30,20 @@ export class Translations {
     }
   }
 
-  async getMissing(catalogFiles: string[]) {
+  async format(catalogFiles: string[]) {
+    for (const catalogFile of catalogFiles) {
+      const translations = await this.parser.parse(catalogFile)
+
+      const rebuiltContent = translations
+        .filter((translation) => translation.msgid.length > 0)
+        .map((translation) => [...translation.comments, ...translation.msgid, ...translation.msgstr, ''].join('\n'))
+        .join('\n')
+
+      await fs.writeFile(catalogFile, rebuiltContent)
+    }
+  }
+
+  async getMissing(catalogFiles: string[]): Promise<MissingTranslation[]> {
     const missingTranslations: MissingTranslation[] = []
 
     for (const catalogFile of catalogFiles) {
