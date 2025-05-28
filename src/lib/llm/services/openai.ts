@@ -1,12 +1,10 @@
 import {createOpenAI, OpenAIProvider} from '@ai-sdk/openai'
-import {OpenAIChatModelId} from '@ai-sdk/openai/internal'
 
 import {invariant} from '@/lib/command/invariant'
 import {nonEmptyStringOrUndefined} from '@/lib/common/string'
 import {Config} from '@/lib/common/types.js'
+import {Defaults} from '@/lib/llm/defaults'
 import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
-
-const DEFAULT_LANGUAGE_MODEL: OpenAIChatModelId = 'o1'
 
 export class OpenAi implements LlmService {
   private provider!: OpenAIProvider
@@ -16,7 +14,7 @@ export class OpenAi implements LlmService {
   async getAvailableModelIds(): Promise<string[]> {
     invariant(this.config.llmSettings?.provider === 'openai', 'internal_error')
 
-    return [nonEmptyStringOrUndefined(this.config.llmSettings.model) ?? DEFAULT_LANGUAGE_MODEL]
+    return [nonEmptyStringOrUndefined(this.config.llmSettings.model) ?? Defaults.llmSettings.openai.model]
   }
 
   async getProvider(): Promise<LlmProvider> {

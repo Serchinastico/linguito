@@ -6,6 +6,7 @@ export interface Config {
 export type LlmProvider = NonNullable<Config['llmSettings']>['provider']
 
 export type LocalLlmSettings = {
+  model?: string
   provider: 'lmstudio' | 'ollama'
   url: string
 }

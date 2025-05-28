@@ -2,6 +2,8 @@ import {UnorderedList} from '@inkjs/ui'
 import {Box, Text} from 'ink'
 import {PropsWithChildren} from 'react'
 
+import {ellipsize} from '@/lib/common/string'
+
 interface SectionProps extends PropsWithChildren {
   name: string
 }
@@ -16,18 +18,18 @@ const Section = ({children, name}: SectionProps) => (
   </UnorderedList.Item>
 )
 
-interface ValueProps {
-  isOptional?: boolean
+type OptionalityProps = {defaultValue: string; isOptional: true} | {isOptional?: false}
+
+type ValueProps = OptionalityProps & {
   name: string
   value?: string
 }
 
-const Value = ({isOptional, name, value}: ValueProps) => (
+const Value = ({name, value, ...props}: ValueProps) => (
   <UnorderedList.Item>
     <Box flexDirection="row">
       <Text color="yellow">{name}</Text>
-      {isOptional && <Text color="grey"> (opt)</Text>}
-      <Text>: {value}</Text>
+      <Text>: {value ? value : props.isOptional ? <Text color="grey">{ellipsize(props.defaultValue)}</Text> : ''}</Text>
     </Box>
   </UnorderedList.Item>
 )

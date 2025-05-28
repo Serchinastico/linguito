@@ -50,7 +50,7 @@ export class ConfigManager {
             return ['provider', 'apiKey', 'model']
           case 'lmstudio':
           case 'ollama':
-            return ['provider', 'url']
+            return ['provider', 'url', 'model']
           case undefined:
             return [] as ConfigKey[]
         }

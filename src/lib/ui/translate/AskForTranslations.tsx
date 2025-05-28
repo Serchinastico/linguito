@@ -1,3 +1,8 @@
+import {ProgressBar} from '@inkjs/ui'
+import {Box, Text, useInput} from 'ink'
+import {useCallback, useMemo, useState} from 'react'
+
+import {updatingItem} from '@/lib/common/array'
 import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
 import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
 import useArray from '@/lib/ui/hooks/useArray.js'
@@ -5,9 +10,6 @@ import {CodeContext} from '@/lib/ui/translate/CodeContext.js'
 import {TranslateReference} from '@/lib/ui/translate/TranslateReference.js'
 import {TranslationInput} from '@/lib/ui/translate/TranslationInput.js'
 import {useLlmSuggestions} from '@/lib/ui/translate/useLlmSuggestions.js'
-import {ProgressBar} from '@inkjs/ui'
-import {Box, Text, useInput} from 'ink'
-import {useCallback, useMemo, useState} from 'react'
 
 import {Theme} from '../Theme.js'
 
@@ -32,29 +34,33 @@ export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish
     missingTranslations,
   })
 
-  const onExit = useCallback(() => {
-    onFinish(
-      translations.map((translation, index) => ({
-        ...missingTranslations[index],
-        translation: translation.isAccepted ? translation.translation : '',
-      })),
-    )
-  }, [onFinish, missingTranslations, translations])
+  const onExit = useCallback(
+    (translations: AcceptedTranslation[]) => {
+      onFinish(
+        translations.map((translation, index) => ({
+          ...missingTranslations[index],
+          translation: translation.isAccepted ? translation.translation : '',
+        })),
+      )
+    },
+    [onFinish, missingTranslations],
+  )
 
   const onSubmit = useCallback(
     (value: string) => {
-      updateTranslation(translationIndex, {isAccepted: true, translation: value})
+      const newItem = {isAccepted: true, translation: value}
+      updateTranslation(translationIndex, newItem)
       const firstPendingTranslationIndex = translations.findIndex(
         (t, index) => translationIndex !== index && !t.isAccepted,
       )
 
       if (firstPendingTranslationIndex === -1) {
-        onExit()
+        onExit(updatingItem(translations, translationIndex, newItem))
       } else {
         setTranslationIndex(firstPendingTranslationIndex)
       }
     },
-    [translationIndex, translations, updateTranslation],
+    [translationIndex, translations, updateTranslation, onExit],
   )
 
   useInput((input, key) => {
@@ -124,7 +130,7 @@ export const AskForTranslations = ({isLlmAssisted, missingTranslations, onFinish
         {isExiting ? (
           <ConfirmationPrompt
             onCancel={() => onFinish([])}
-            onConfirm={onExit}
+            onConfirm={() => onExit(translations)}
             prompt={`Save accepted translations (${numberOfAcceptedTranslations} accepted out of ${translations.length} translations)`}
           />
         ) : (
