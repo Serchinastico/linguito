@@ -5,13 +5,12 @@ import {z} from 'zod'
 import {invariant} from '@/lib/command/invariant.js'
 import {nonEmptyStringOrUndefined} from '@/lib/common/string'
 import {Config, FilledTranslation, LlmProvider, MissingTranslation} from '@/lib/common/types.js'
+import {Defaults} from '@/lib/llm/defaults'
 import {Claude} from '@/lib/llm/services/claude'
 import {LlmService} from '@/lib/llm/services/llm-service.js'
 import {LmStudio} from '@/lib/llm/services/lmstudio.js'
 import {Ollama} from '@/lib/llm/services/ollama.js'
 import {OpenAi} from '@/lib/llm/services/openai'
-
-const SYSTEM_PROMPT = `You are a professional translator. You are given a text appearing in an application and you need to translate to the desired language. You will be given context and instructions on how to translate the text. Do not answer with anything else than the translated text. Your response will only contained the translated text, with no extra characters, punctuation or information.`
 
 const getTranslationPrompt = ({fileContents, key, locale}: {fileContents: string; key: string; locale: string}) =>
   `I need you to translate a text for me. The text appears in an application and I need you to give me the translation to the ${locale} language locale.
@@ -60,7 +59,7 @@ export class Llm {
         locale: missingTranslation.locale,
       }),
       schema: z.object({translation: z.string()}),
-      system: nonEmptyStringOrUndefined(this.config.systemPrompt) ?? SYSTEM_PROMPT,
+      system: nonEmptyStringOrUndefined(this.config.systemPrompt) ?? Defaults.systemPrompt,
     })
 
     return {...missingTranslation, translation: object.translation.trim()}
