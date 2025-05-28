@@ -1,5 +1,7 @@
 import {useCallback, useState} from 'react'
 
+import {updatingItem} from '@/lib/common/array'
+
 /**
  * A custom hook that provides utility functions for managing an array state.
  *
@@ -26,7 +28,7 @@ export default function useArray<TItem>(defaultValue: TItem[] = []) {
   }, [])
 
   const update = useCallback((index: number, newElement: TItem) => {
-    setArray((a) => [...a.slice(0, index), newElement, ...a.slice(index + 1, a.length)])
+    setArray((a) => updatingItem(a, index, newElement))
   }, [])
 
   const remove = useCallback((index: number) => {
