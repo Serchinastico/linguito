@@ -39,7 +39,7 @@
     "@types/chai": "^5.2.2",
     "@types/configstore": "^6.0.2",
     "@types/espree": "^10.1.0",
-    "@types/gettext-parser": "^4.0.4",
+    "@types/gettext-parser": "^8.0.0",
     "@types/node": "^22.15.23",
     "@types/react": "^19.1.6",
     "chai": "^5.2.0",

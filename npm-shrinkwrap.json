@@ -43,7 +43,7 @@
         "@types/chai": "^5.2.2",
         "@types/configstore": "^6.0.2",
         "@types/espree": "^10.1.0",
-        "@types/gettext-parser": "^4.0.4",
+        "@types/gettext-parser": "^8.0.0",
         "@types/node": "^22.15.23",
         "@types/react": "^19.1.6",
         "chai": "^5.2.0",
@@ -5496,9 +5496,9 @@
       "license": "MIT"
     },
     "node_modules/@types/gettext-parser": {
-      "version": "4.0.4",
-      "resolved": "https://registry.npmjs.org/@types/gettext-parser/-/gettext-parser-4.0.4.tgz",
-      "integrity": "sha512-/r+YfxWZjPwt4HMAO3ay+2e3/IWJxBJxISqKFsWJW/87XllM+r5wHvioVrD45mduQ0UR7OnzMUbMe1PZfukswg==",
+      "version": "8.0.0",
+      "resolved": "https://registry.npmjs.org/@types/gettext-parser/-/gettext-parser-8.0.0.tgz",
+      "integrity": "sha512-oBBIahfWKqAC8LsIw+uFwhXfwlF8GhWDUhyEjoP7Pl9g5bFLhYA/2SiXPkE4oKhDX9fL091qCAyPVZtIkd5X6Q==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
