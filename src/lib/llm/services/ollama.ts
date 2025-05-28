@@ -1,8 +1,8 @@
 import {createOllama} from 'ollama-ai-provider'
 
-import {invariant} from '@/lib/command/invariant'
+import {invariant} from '@/lib/command/invariant.js'
 import {Config} from '@/lib/common/types.js'
-import {Defaults} from '@/lib/llm/defaults'
+import {Defaults} from '@/lib/llm/defaults.js'
 import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
 
 type OllamaModelsResponse = {

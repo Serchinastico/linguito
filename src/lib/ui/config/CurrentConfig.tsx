@@ -1,8 +1,8 @@
 import {Box, Text} from 'ink'
 import {ReactElement} from 'react'
 
-import {Defaults, getDefaultLlmSetting} from '@/lib/llm/defaults'
-import {ConfigItem} from '@/lib/ui/config/ConfigItem'
+import {Defaults, getDefaultLlmSetting} from '@/lib/llm/defaults.js'
+import {ConfigItem} from '@/lib/ui/config/ConfigItem.js'
 
 import {Config} from '../../common/types.js'
 

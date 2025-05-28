@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 
-import {invariant} from '@/lib/command/invariant'
+import {invariant} from '@/lib/command/invariant.js'
 
 type Translation = {
   comments: string[]
@@ -8,7 +8,7 @@ type Translation = {
   msgstr: string[]
 }
 
-export class GetTextParser {
+export class GettextParser {
   constructor() {}
 
   async parse(catalogFilePath: string): Promise<Translation[]> {

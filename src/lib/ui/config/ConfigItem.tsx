@@ -2,7 +2,7 @@ import {UnorderedList} from '@inkjs/ui'
 import {Box, Text} from 'ink'
 import {PropsWithChildren} from 'react'
 
-import {ellipsize} from '@/lib/common/string'
+import {ellipsize} from '@/lib/common/string.js'
 
 interface SectionProps extends PropsWithChildren {
   name: string

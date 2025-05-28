@@ -1,6 +1,6 @@
 import {useCallback, useState} from 'react'
 
-import {updatingItem} from '@/lib/common/array'
+import {updatingItem} from '@/lib/common/array.js'
 
 /**
  * A custom hook that provides utility functions for managing an array state.

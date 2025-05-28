@@ -4,13 +4,13 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
-import {GetTextParser} from '@/lib/lingui/gettext-parser'
+import {GettextParser} from '@/lib/lingui/gettext-parser.js'
 
 export class Translations {
-  private parser: GetTextParser
+  private parser: GettextParser
 
   constructor(private projectDir: string) {
-    this.parser = new GetTextParser()
+    this.parser = new GettextParser()
   }
 
   async addMissing(translations: FilledTranslation[]) {

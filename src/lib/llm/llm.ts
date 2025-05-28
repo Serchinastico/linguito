@@ -3,14 +3,14 @@ import fs from 'node:fs/promises'
 import {z} from 'zod'
 
 import {invariant} from '@/lib/command/invariant.js'
-import {nonEmptyStringOrUndefined} from '@/lib/common/string'
+import {nonEmptyStringOrUndefined} from '@/lib/common/string.js'
 import {Config, FilledTranslation, LlmProvider, MissingTranslation} from '@/lib/common/types.js'
-import {Defaults} from '@/lib/llm/defaults'
-import {Claude} from '@/lib/llm/services/claude'
+import {Defaults} from '@/lib/llm/defaults.js'
+import {Claude} from '@/lib/llm/services/claude.js'
 import {LlmService} from '@/lib/llm/services/llm-service.js'
 import {LmStudio} from '@/lib/llm/services/lmstudio.js'
 import {Ollama} from '@/lib/llm/services/ollama.js'
-import {OpenAi} from '@/lib/llm/services/openai'
+import {OpenAi} from '@/lib/llm/services/openai.js'
 
 const getTranslationPrompt = ({fileContents, key, locale}: {fileContents: string; key: string; locale: string}) =>
   `I need you to translate a text for me. The text appears in an application and I need you to give me the translation to the ${locale} language locale.

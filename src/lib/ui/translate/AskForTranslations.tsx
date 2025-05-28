@@ -2,7 +2,7 @@ import {ProgressBar} from '@inkjs/ui'
 import {Box, Text, useInput} from 'ink'
 import {useCallback, useMemo, useState} from 'react'
 
-import {updatingItem} from '@/lib/common/array'
+import {updatingItem} from '@/lib/common/array.js'
 import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
 import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
 import useArray from '@/lib/ui/hooks/useArray.js'

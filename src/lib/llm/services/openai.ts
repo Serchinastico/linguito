@@ -1,9 +1,9 @@
 import {createOpenAI, OpenAIProvider} from '@ai-sdk/openai'
 
-import {invariant} from '@/lib/command/invariant'
-import {nonEmptyStringOrUndefined} from '@/lib/common/string'
+import {invariant} from '@/lib/command/invariant.js'
+import {nonEmptyStringOrUndefined} from '@/lib/common/string.js'
 import {Config} from '@/lib/common/types.js'
-import {Defaults} from '@/lib/llm/defaults'
+import {Defaults} from '@/lib/llm/defaults.js'
 import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
 
 export class OpenAi implements LlmService {

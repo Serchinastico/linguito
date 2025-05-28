@@ -1,4 +1,4 @@
-import {LlmProvider} from '@/lib/common/types'
+import {LlmProvider} from '@/lib/common/types.js'
 
 export const Defaults = {
   llmSettings: {
