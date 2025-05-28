@@ -1,8 +1,9 @@
+import {AnthropicProvider} from '@ai-sdk/anthropic'
 import {OpenAIProvider} from '@ai-sdk/openai'
 import {OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
 import {OllamaProvider} from 'ollama-ai-provider'
 
-export type LlmProvider = OllamaProvider | OpenAICompatibleProvider | OpenAIProvider
+export type LlmProvider = AnthropicProvider | OllamaProvider | OpenAICompatibleProvider | OpenAIProvider
 
 /**
  * Interface representing the base service for language model operations.

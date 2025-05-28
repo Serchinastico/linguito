@@ -1,5 +1,3 @@
-import {OpenAIChatModelId} from '@ai-sdk/openai/internal'
-
 export interface Config {
   llmSettings?: LocalLlmSettings | RemoteLlmSettings
   systemPrompt?: string
@@ -14,8 +12,8 @@ export type LocalLlmSettings = {
 
 export type RemoteLlmSettings = {
   apiKey: string
-  model?: OpenAIChatModelId
-  provider: 'openai'
+  model?: string
+  provider: 'claude' | 'openai'
 }
 
 export const emptyConfig: Config = {

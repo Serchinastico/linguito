@@ -40,20 +40,23 @@ export class ConfigManager {
     if (keyPath === undefined) return Object.keys(this.config) as ConfigKey[]
 
     const lastKey = keyPath[keyPath.length - 1]
+    if (!lastKey) return [] as ConfigKey[]
+
     switch (lastKey) {
       case 'llmSettings':
         switch (this.config.llmSettings?.provider) {
+          case 'claude':
+          case 'openai':
+            return ['provider', 'apiKey', 'model']
           case 'lmstudio':
           case 'ollama':
             return ['provider', 'url']
-          case 'openai':
-            return ['provider', 'apiKey', 'model']
           case undefined:
-            return []
+            return [] as ConfigKey[]
         }
-      // eslint-disable-next-line no-fallthrough
+        break
       default:
-        return []
+        return [] as ConfigKey[]
     }
   }
 

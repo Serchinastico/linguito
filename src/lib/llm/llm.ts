@@ -3,7 +3,9 @@ import fs from 'node:fs/promises'
 import {z} from 'zod'
 
 import {invariant} from '@/lib/command/invariant.js'
+import {nonEmptyStringOrUndefined} from '@/lib/common/string'
 import {Config, FilledTranslation, LlmProvider, MissingTranslation} from '@/lib/common/types.js'
+import {Claude} from '@/lib/llm/services/claude'
 import {LlmService} from '@/lib/llm/services/llm-service.js'
 import {LmStudio} from '@/lib/llm/services/lmstudio.js'
 import {Ollama} from '@/lib/llm/services/ollama.js'
@@ -58,7 +60,7 @@ export class Llm {
         locale: missingTranslation.locale,
       }),
       schema: z.object({translation: z.string()}),
-      system: this.config.systemPrompt ?? SYSTEM_PROMPT,
+      system: nonEmptyStringOrUndefined(this.config.systemPrompt) ?? SYSTEM_PROMPT,
     })
 
     return {...missingTranslation, translation: object.translation.trim()}
@@ -66,6 +68,8 @@ export class Llm {
 
   private createService(provider: LlmProvider): LlmService {
     switch (provider) {
+      case 'claude':
+        return new Claude(this.config)
       case 'lmstudio':
         return new LmStudio(this.config)
       case 'ollama':

@@ -1,4 +1,5 @@
 import {Box, Text} from 'ink'
+import {ReactElement} from 'react'
 
 import {ConfigItem} from '@/lib/ui/config/ConfigItem'
 
@@ -27,15 +28,9 @@ interface LlmConfigValuesProps {
   llmSettings: Config['llmSettings']
 }
 
-const LlmConfigValues = ({llmSettings}: LlmConfigValuesProps) => {
+const LlmConfigValues = ({llmSettings}: LlmConfigValuesProps): ReactElement => {
   switch (llmSettings?.provider) {
-    case 'lmstudio':
-    case 'ollama':
-      return (
-        <>
-          <ConfigItem.Value isOptional name="URL" value={llmSettings?.url} />
-        </>
-      )
+    case 'claude':
     case 'openai':
       return (
         <>
@@ -43,5 +38,14 @@ const LlmConfigValues = ({llmSettings}: LlmConfigValuesProps) => {
           <ConfigItem.Value isOptional name="Model" value={llmSettings?.model} />
         </>
       )
+    case 'lmstudio':
+    case 'ollama':
+      return (
+        <>
+          <ConfigItem.Value isOptional name="URL" value={llmSettings?.url} />
+        </>
+      )
+    case undefined:
+      return <></>
   }
 }
