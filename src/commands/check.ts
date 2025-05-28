@@ -1,7 +1,8 @@
+import {Args} from '@oclif/core'
+
 import BaseCommand from '@/lib/command/base.js'
 import {ConfigParser} from '@/lib/lingui/parser.js'
 import {Translations} from '@/lib/lingui/translations.js'
-import {Args} from '@oclif/core'
 
 const SEPARATOR = '\n\t• '
 

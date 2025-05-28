@@ -1,8 +1,9 @@
+import {Args, Flags} from '@oclif/core'
+import cj from 'color-json'
+
 import BaseCommand from '@/lib/command/base.js'
 import {ConfigKeyPath} from '@/lib/common/types.js'
 import {ConfigManager} from '@/lib/config/config-manager.js'
-import {Args, Flags} from '@oclif/core'
-import cj from 'color-json'
 
 export default class Get extends BaseCommand {
   static args = {

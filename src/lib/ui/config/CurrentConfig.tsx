@@ -1,8 +1,9 @@
-import {UnorderedList} from '@inkjs/ui'
 import {Box, Text} from 'ink'
+import {ReactElement} from 'react'
 
-import {Config, ConfigKey} from '../../common/types.js'
-import {getLabelForConfigKey} from './utils.js'
+import {ConfigItem} from '@/lib/ui/config/ConfigItem'
+
+import {Config} from '../../common/types.js'
 
 interface Props {
   config: Config
@@ -13,38 +14,38 @@ export const CurrentConfig = ({config}: Props) => {
     <Box borderColor="grey" borderStyle="round" flexDirection="column" gap={1} paddingX={2}>
       <Text underline>Current configuration</Text>
 
-      {toUnorderedList(config)}
+      <ConfigItem.Section name={'LLM Settings'}>
+        <ConfigItem.Value name="Provider" value={config.llmSettings?.provider} />
+        <LlmConfigValues llmSettings={config.llmSettings} />
+      </ConfigItem.Section>
+
+      <ConfigItem.Value isOptional name={'System Prompt'} value={config.systemPrompt} />
     </Box>
   )
 }
 
-/**
- * Converts a given node (object, string, or null/undefined) into an Ink's unordered list.
- *
- * This function is recursive and processes the input and returns either a text node, a mapped list of items,
- * or null if the input is null or undefined.
- * - If the node is a string, it returns a text element containing the string value.
- * - If the node is an object, it recursively maps its entries into list items, preserving hierarchy as needed.
- * - If the node is null or undefined, it returns null.
- *
- * @param node - The node to be converted, which may be a string, an object, or null/undefined.
- * @returns The processed result, either null, a JSX element for a single string, or an array of JSX elements for an
- *          object structure.
- */
-const toUnorderedList = (node: null | object | string | undefined) => {
-  if (node === null || node === undefined) return null
+interface LlmConfigValuesProps {
+  llmSettings: Config['llmSettings']
+}
 
-  if (typeof node === 'string') {
-    return <Text>{node}</Text>
+const LlmConfigValues = ({llmSettings}: LlmConfigValuesProps): ReactElement => {
+  switch (llmSettings?.provider) {
+    case 'claude':
+    case 'openai':
+      return (
+        <>
+          <ConfigItem.Value name="API Key" value={llmSettings?.apiKey} />
+          <ConfigItem.Value isOptional name="Model" value={llmSettings?.model} />
+        </>
+      )
+    case 'lmstudio':
+    case 'ollama':
+      return (
+        <>
+          <ConfigItem.Value isOptional name="URL" value={llmSettings?.url} />
+        </>
+      )
+    case undefined:
+      return <></>
   }
-
-  return Object.entries(node).map(([key, value]) => (
-    <UnorderedList.Item key={key}>
-      <Box flexDirection={typeof value === 'string' ? 'row' : 'column'}>
-        <Text color="yellow">{getLabelForConfigKey(key as ConfigKey)}</Text>
-
-        {typeof value === 'string' ? <Text>: {value}</Text> : toUnorderedList(value)}
-      </Box>
-    </UnorderedList.Item>
-  ))
 }

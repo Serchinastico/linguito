@@ -1,8 +1,9 @@
+import {Box, Text, useInput} from 'ink'
+import {useMemo, useState} from 'react'
+
 import {Config, ConfigKey, ConfigKeyPath} from '@/lib/common/types.js'
 import {ConfigManager} from '@/lib/config/config-manager.js'
 import {ConfirmationPrompt} from '@/lib/ui/common/ConfirmationPrompt.js'
-import {Box, Text, useInput} from 'ink'
-import {useMemo, useState} from 'react'
 
 import {Theme} from '../Theme.js'
 import {ConfigReference} from './ConfigReference.js'
@@ -15,7 +16,7 @@ export interface Props {
 }
 
 export const EditConfig = ({config: currentConfig, onFinish}: Props) => {
-  const [selectedConfigKeys, setSelectedConfigKeys] = useState<ConfigKeyPath>(undefined)
+  const [selectedConfigKeys, setSelectedConfigKeys] = useState<ConfigKeyPath | undefined>(undefined)
   const configManager = useMemo(() => new ConfigManager(), [])
   const availableConfigKeys = useMemo<ConfigKey[]>(
     () => configManager.getAvailableKeyPaths(selectedConfigKeys),

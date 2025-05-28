@@ -1,7 +1,8 @@
+import {Args} from '@oclif/core'
+
 import BaseCommand from '@/lib/command/base.js'
 import {ConfigKeyPath} from '@/lib/common/types.js'
 import {ConfigManager} from '@/lib/config/config-manager.js'
-import {Args} from '@oclif/core'
 
 export default class Set extends BaseCommand {
   static args = {

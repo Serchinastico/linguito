@@ -1,7 +1,8 @@
-import {canReadFile, isFile} from '@/lib/fs/fs.js'
 import {Command} from '@oclif/core'
 import {CommandError} from '@oclif/core/interfaces'
 import path from 'node:path'
+
+import {canReadFile, isFile} from '@/lib/fs/fs.js'
 
 import {invariant, INVARIANT_ERROR_PREFIX, InvariantErrorCode, invariantErrorMessage} from './invariant.js'
 

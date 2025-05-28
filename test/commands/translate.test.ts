@@ -1,8 +1,9 @@
-// @ts-expect-error WebStorm will not detect this import
-import Translate from '@/commands/translate.js'
 import {captureOutput} from '@oclif/test'
 import fs from 'node:fs/promises'
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+
+// @ts-expect-error WebStorm will not detect this import
+import Translate from '@/commands/translate.js'
 
 import {backupCatalogTestFiles, restoreCatalogTestFiles} from '../lib/fs.js'
 

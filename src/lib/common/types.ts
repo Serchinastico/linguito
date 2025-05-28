@@ -1,9 +1,19 @@
 export interface Config {
-  llmSettings?: {
-    provider: 'lmstudio' | 'ollama'
-    url: string
-  }
+  llmSettings?: LocalLlmSettings | RemoteLlmSettings
   systemPrompt?: string
+}
+
+export type LlmProvider = NonNullable<Config['llmSettings']>['provider']
+
+export type LocalLlmSettings = {
+  provider: 'lmstudio' | 'ollama'
+  url: string
+}
+
+export type RemoteLlmSettings = {
+  apiKey: string
+  model?: string
+  provider: 'claude' | 'openai'
 }
 
 export const emptyConfig: Config = {
@@ -14,8 +24,9 @@ export const emptyConfig: Config = {
   systemPrompt: '',
 }
 
-export type ConfigKey = NonNullable<ConfigKeyPath>[number]
-export type ConfigKeyPath = KeyPath<Config>
+export type ConfigKey = ConfigKeyPath extends (infer U)[] ? U : never
+
+export type ConfigKeyPath = KeyPath<Config> | KeyPath<LocalLlmSettings> | KeyPath<RemoteLlmSettings>
 
 export type FilledTranslation = MissingTranslation & {translation: string}
 
@@ -28,6 +39,6 @@ export type MissingTranslation = {
 
 type KeyPath<T> = T extends object
   ? {
-      [K in keyof T]: [K, ...KeyPath<T[K]>]
+      [K in keyof T]-?: [K] | (T[K] extends object ? [K, ...KeyPath<T[K]>] : never)
     }[keyof T]
-  : []
+  : never

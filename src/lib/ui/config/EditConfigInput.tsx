@@ -1,6 +1,7 @@
-import {ConfigKey, ConfigKeyPath} from '@/lib/common/types.js'
 import {Select, TextInput} from '@inkjs/ui'
 import {Box, Text} from 'ink'
+
+import {ConfigKey, ConfigKeyPath} from '@/lib/common/types.js'
 
 import {getLabelForConfigKey} from './utils.js'
 
@@ -17,7 +18,7 @@ export const EditConfigInput = (props: Props) => {
 interface SelectorProps {
   availableConfigKeys: ConfigKey[]
   onSelect: (key: ConfigKey) => void
-  selectedConfigKeys: ConfigKeyPath
+  selectedConfigKeys?: ConfigKeyPath
 }
 
 const ConfigKeySelector = ({availableConfigKeys, onSelect, selectedConfigKeys}: SelectorProps) => {
@@ -46,7 +47,7 @@ const ConfigKeySelector = ({availableConfigKeys, onSelect, selectedConfigKeys}: 
 
 interface InputProps {
   onSubmit: (keyPath: ConfigKeyPath, value: string) => void
-  selectedConfigKeys: ConfigKeyPath
+  selectedConfigKeys?: ConfigKeyPath
 }
 
 const ConfigValueInput = ({onSubmit, selectedConfigKeys}: InputProps) => {
@@ -64,7 +65,7 @@ const ConfigValueInput = ({onSubmit, selectedConfigKeys}: InputProps) => {
       <Text color="gray">]? </Text>
       <TextInput
         onSubmit={(value) => {
-          onSubmit(selectedConfigKeys, value)
+          onSubmit(selectedConfigKeys!, value)
         }}
       />
     </Box>

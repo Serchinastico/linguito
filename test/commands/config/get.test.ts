@@ -1,7 +1,8 @@
-// @ts-expect-error WebStorm will not detect this import
-import Get from '@/commands/config/get.js'
 import {captureOutput} from '@oclif/test'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
+
+// @ts-expect-error WebStorm will not detect this import
+import Get from '@/commands/config/get.js'
 
 const mocks = vi.hoisted(() => {
   return {default: vi.fn()}

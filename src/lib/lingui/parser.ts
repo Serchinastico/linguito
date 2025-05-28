@@ -1,6 +1,7 @@
-import {invariant} from '@/lib/command/invariant.js'
 import {getConfig} from '@lingui/conf'
 import {combinatorial} from '@madeja-studio/cepillo'
+
+import {invariant} from '@/lib/command/invariant.js'
 
 /**
  * Utility class for parsing and processing Lingui configuration files.
