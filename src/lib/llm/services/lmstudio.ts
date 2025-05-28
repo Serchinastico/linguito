@@ -1,8 +1,10 @@
-import {Config} from '@/lib/common/types.js'
-import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
 import {createOpenAICompatible} from '@ai-sdk/openai-compatible'
 
-const LM_STUDIO_DEFAULT_URL = 'http://localhost:1234/v1'
+import {invariant} from '@/lib/command/invariant'
+import {Config} from '@/lib/common/types.js'
+import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
+
+const LM_STUDIO_DEFAULT_URL = 'http://localhost:1234'
 
 type LmStudioModelsResponse = {
   data: {
@@ -20,6 +22,8 @@ export class LmStudio implements LlmService {
   constructor(private config: Config) {}
 
   async getAvailableModelIds(): Promise<string[]> {
+    invariant(this.config.llmSettings?.provider === 'lmstudio', 'internal_error')
+
     if (!this.modelIds) {
       const response = await fetch(`${this.config.llmSettings?.url ?? LM_STUDIO_DEFAULT_URL}/v1/models`)
       const json: LmStudioModelsResponse = await response.json()
@@ -30,10 +34,12 @@ export class LmStudio implements LlmService {
   }
 
   async getProvider(): Promise<LlmProvider> {
+    invariant(this.config.llmSettings?.provider === 'lmstudio', 'internal_error')
+
     if (!this.provider) {
       this.provider = createOpenAICompatible({
-        baseURL: this.config.llmSettings?.url ?? LM_STUDIO_DEFAULT_URL,
-        name: this.config.llmSettings?.provider ?? 'lmstudio',
+        baseURL: `${this.config.llmSettings.url ?? LM_STUDIO_DEFAULT_URL}/v1`,
+        name: 'lmstudio',
       })
     }
 

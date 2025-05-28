@@ -1,8 +1,9 @@
-import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
 import {groupBy} from '@madeja-studio/cepillo'
 import gettextParser from 'gettext-parser'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+
+import {FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
 
 export class Translations {
   constructor(private projectDir: string) {}

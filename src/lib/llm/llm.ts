@@ -1,11 +1,13 @@
-import {invariant} from '@/lib/command/invariant.js'
-import {Config, FilledTranslation, MissingTranslation} from '@/lib/common/types.js'
-import {LlmService} from '@/lib/llm/services/llm-service.js'
-import {LmStudio} from '@/lib/llm/services/lmstudio.js'
-import {Ollama} from '@/lib/llm/services/ollama.js'
 import {generateObject} from 'ai'
 import fs from 'node:fs/promises'
 import {z} from 'zod'
+
+import {invariant} from '@/lib/command/invariant.js'
+import {Config, FilledTranslation, LlmProvider, MissingTranslation} from '@/lib/common/types.js'
+import {LlmService} from '@/lib/llm/services/llm-service.js'
+import {LmStudio} from '@/lib/llm/services/lmstudio.js'
+import {Ollama} from '@/lib/llm/services/ollama.js'
+import {OpenAi} from '@/lib/llm/services/openai'
 
 const SYSTEM_PROMPT = `You are a professional translator. You are given a text appearing in an application and you need to translate to the desired language. You will be given context and instructions on how to translate the text. Do not answer with anything else than the translated text. Your response will only contained the translated text, with no extra characters, punctuation or information.`
 
@@ -62,16 +64,22 @@ export class Llm {
     return {...missingTranslation, translation: object.translation.trim()}
   }
 
+  private createService(provider: LlmProvider): LlmService {
+    switch (provider) {
+      case 'lmstudio':
+        return new LmStudio(this.config)
+      case 'ollama':
+        return new Ollama(this.config)
+      case 'openai':
+        return new OpenAi(this.config)
+    }
+  }
+
   private async getService(): Promise<LlmService> {
+    invariant(!!this.config.llmSettings?.provider, 'internal_error')
+
     if (!this.service) {
-      switch (this.config.llmSettings?.provider) {
-        case 'lmstudio':
-          this.service = new LmStudio(this.config)
-          break
-        case 'ollama':
-          this.service = new Ollama(this.config)
-          break
-      }
+      this.service = this.createService(this.config.llmSettings.provider)
     }
 
     return this.service

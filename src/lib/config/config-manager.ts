@@ -1,7 +1,8 @@
-import {invariant} from '@/lib/command/invariant.js'
-import {Config, ConfigKey, ConfigKeyPath, emptyConfig} from '@/lib/common/types.js'
 import Configstore from 'configstore'
 import fs from 'node:fs'
+
+import {invariant} from '@/lib/command/invariant.js'
+import {Config, ConfigKey, ConfigKeyPath, emptyConfig} from '@/lib/common/types.js'
 
 export class ConfigManager {
   config: Config
@@ -35,13 +36,25 @@ export class ConfigManager {
     return keyPath?.reduce((acc, key) => acc && acc[key], this.config as any)
   }
 
-  getAvailableKeyPaths(keyPath: ConfigKeyPath): ConfigKey[] {
+  getAvailableKeyPaths(keyPath?: ConfigKeyPath): ConfigKey[] {
     if (keyPath === undefined) return Object.keys(this.config) as ConfigKey[]
 
-    const value = this.get(keyPath) ?? {}
-
-    if (typeof value === 'string') return []
-    else return Object.keys(value) as ConfigKey[]
+    const lastKey = keyPath[keyPath.length - 1]
+    switch (lastKey) {
+      case 'llmSettings':
+        switch (this.config.llmSettings?.provider) {
+          case 'lmstudio':
+          case 'ollama':
+            return ['provider', 'url']
+          case 'openai':
+            return ['provider', 'apiKey', 'model']
+          case undefined:
+            return []
+        }
+      // eslint-disable-next-line no-fallthrough
+      default:
+        return []
+    }
   }
 
   save() {
