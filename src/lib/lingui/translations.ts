@@ -1,5 +1,5 @@
 import {groupBy} from '@madeja-studio/cepillo'
-import gettextParser from 'gettext-parser'
+import {po as poParser} from 'gettext-parser'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
@@ -19,13 +19,13 @@ export class Translations {
 
     for (const catalogFile of catalogFiles) {
       const poFile = await fs.readFile(catalogFile, 'utf-8')
-      const po = gettextParser.po.parse(poFile)
+      const po = poParser.parse(poFile)
 
       for (const translation of translationsByCatalog[catalogFile]) {
         po.translations[''][translation.key]['msgstr'] = [translation.translation]
       }
 
-      const buffer = gettextParser.po.compile(po, {foldLength: 0})
+      const buffer = poParser.compile(po, {foldLength: 0})
       await fs.writeFile(catalogFile, buffer)
     }
   }
@@ -48,7 +48,7 @@ export class Translations {
 
     for (const catalogFile of catalogFiles) {
       const poFile = await fs.readFile(catalogFile, 'utf-8')
-      const po = gettextParser.po.parse(poFile)
+      const po = poParser.parse(poFile)
       const translations = po.translations['']
 
       for (const [key, translation] of Object.entries(translations)) {
