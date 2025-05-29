@@ -55,7 +55,6 @@
     "prettier": "^3.5.3",
     "release-it": "^19.0.2",
     "shx": "^0.4.0",
-    "ts-morph": "^26.0.0",
     "tsc-alias": "^1.8.16",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
