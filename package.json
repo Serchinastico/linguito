@@ -34,7 +34,6 @@
     "@eslint/js": "^9.28.0",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4.1.13",
-    "@release-it/conventional-changelog": "^10.0.1",
     "@types/chai": "^5.2.2",
     "@types/configstore": "^6.0.2",
     "@types/espree": "^10.1.0",
@@ -110,9 +109,6 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest",
     "release": "release-it",
-    "release:major": "release-it --increment=major",
-    "release:minor": "release-it --increment=minor",
-    "release:patch": "release-it --increment=patch",
     "start": "npm run build && ./bin/dev.js",
     "test": "vitest run",
     "test:watch": "vitest"
