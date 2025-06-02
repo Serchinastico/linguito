@@ -4,8 +4,8 @@ import {OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
 import {LanguageModelV1} from 'ai'
 import {OllamaProvider} from 'ollama-ai-provider'
 
-import {invariant} from '@/lib/command/invariant'
-import {Config} from '@/lib/common/types'
+import {invariant} from '@/lib/command/invariant.js'
+import {Config} from '@/lib/common/types.js'
 
 export type LlmProvider = AnthropicProvider | OllamaProvider | OpenAICompatibleProvider | OpenAIProvider
 
