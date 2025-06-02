@@ -1,7 +1,6 @@
 import {createOllama} from 'ollama-ai-provider'
 
 import {invariant} from '@/lib/command/invariant.js'
-import {Config} from '@/lib/common/types.js'
 import {Defaults} from '@/lib/llm/defaults.js'
 import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
 
@@ -11,11 +10,9 @@ type OllamaModelsResponse = {
   }[]
 }
 
-export class Ollama implements LlmService {
+export class Ollama extends LlmService {
   private modelIds!: string[]
   private provider!: LlmProvider
-
-  constructor(private config: Config) {}
 
   async getAvailableModelIds(): Promise<string[]> {
     invariant(this.config.llmSettings?.provider === 'ollama', 'internal_error')

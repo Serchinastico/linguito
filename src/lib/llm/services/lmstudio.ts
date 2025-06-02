@@ -1,7 +1,7 @@
-import {createOpenAICompatible} from '@ai-sdk/openai-compatible'
+import {createOpenAICompatible, OpenAICompatibleChatLanguageModel} from '@ai-sdk/openai-compatible'
+import {LanguageModelV1} from 'ai'
 
 import {invariant} from '@/lib/command/invariant.js'
-import {Config} from '@/lib/common/types.js'
 import {Defaults} from '@/lib/llm/defaults.js'
 import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
 
@@ -14,11 +14,9 @@ type LmStudioModelsResponse = {
   object: string
 }
 
-export class LmStudio implements LlmService {
+export class LmStudio extends LlmService {
   private modelIds!: string[]
   private provider!: LlmProvider
-
-  constructor(private config: Config) {}
 
   async getAvailableModelIds(): Promise<string[]> {
     invariant(this.config.llmSettings?.provider === 'lmstudio', 'internal_error')
@@ -30,6 +28,30 @@ export class LmStudio implements LlmService {
     }
 
     return this.modelIds
+  }
+
+  async getModel(): Promise<LanguageModelV1> {
+    const llmSettings = this.config.llmSettings
+    invariant(llmSettings?.provider === 'lmstudio', 'internal_error')
+
+    const models = await this.getAvailableModelIds()
+
+    invariant(models.length > 0, 'llm:no_models_found')
+
+    return new OpenAICompatibleChatLanguageModel(
+      models[0],
+      {},
+      {
+        defaultObjectGenerationMode: 'json',
+        headers: () => ({}),
+        provider: `lmstudio.chat`,
+        supportsStructuredOutputs: true,
+        url: ({path}) => {
+          const url = new URL(`${llmSettings.url ?? Defaults.llmSettings.lmstudio.url}/v1${path}`)
+          return url.toString()
+        },
+      },
+    )
   }
 
   async getProvider(): Promise<LlmProvider> {
