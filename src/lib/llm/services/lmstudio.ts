@@ -36,6 +36,8 @@ export class LmStudio extends LlmService {
 
     const models = await this.getAvailableModelIds()
 
+    invariant(models.length > 0, 'llm:no_models_found')
+
     return new OpenAICompatibleChatLanguageModel(
       models[0],
       {},

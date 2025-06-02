@@ -17,8 +17,6 @@ export type LlmProvider = AnthropicProvider | OllamaProvider | OpenAICompatibleP
 export abstract class LlmService {
   constructor(protected config: Config) {}
 
-  abstract getAvailableModelIds(): Promise<string[]>
-
   async getModel(): Promise<LanguageModelV1> {
     const provider = await this.getProvider()
     const availableModelIds = await this.getAvailableModelIds()
@@ -29,5 +27,7 @@ export abstract class LlmService {
     return provider(modelId, {structuredOutputs: true})
   }
 
-  abstract getProvider(): Promise<LlmProvider>
+  protected abstract getAvailableModelIds(): Promise<string[]>
+
+  protected abstract getProvider(): Promise<LlmProvider>
 }
