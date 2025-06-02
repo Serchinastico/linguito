@@ -2,14 +2,11 @@ import {AnthropicProvider, createAnthropic} from '@ai-sdk/anthropic'
 
 import {invariant} from '@/lib/command/invariant.js'
 import {nonEmptyStringOrUndefined} from '@/lib/common/string.js'
-import {Config} from '@/lib/common/types.js'
 import {Defaults} from '@/lib/llm/defaults.js'
 import {LlmProvider, LlmService} from '@/lib/llm/services/llm-service.js'
 
-export class Claude implements LlmService {
+export class Claude extends LlmService {
   private provider!: AnthropicProvider
-
-  constructor(private config: Config) {}
 
   async getAvailableModelIds(): Promise<string[]> {
     invariant(this.config.llmSettings?.provider === 'claude', 'internal_error')

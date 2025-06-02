@@ -1,7 +1,11 @@
 import {AnthropicProvider} from '@ai-sdk/anthropic'
 import {OpenAIProvider} from '@ai-sdk/openai'
 import {OpenAICompatibleProvider} from '@ai-sdk/openai-compatible'
+import {LanguageModelV1} from 'ai'
 import {OllamaProvider} from 'ollama-ai-provider'
+
+import {invariant} from '@/lib/command/invariant'
+import {Config} from '@/lib/common/types'
 
 export type LlmProvider = AnthropicProvider | OllamaProvider | OpenAICompatibleProvider | OpenAIProvider
 
@@ -10,7 +14,20 @@ export type LlmProvider = AnthropicProvider | OllamaProvider | OpenAICompatibleP
  * This class must be extended to define specific implementations for interacting
  * with language models.
  */
-export interface LlmService {
-  getAvailableModelIds(): Promise<string[]>
-  getProvider(): Promise<LlmProvider>
+export abstract class LlmService {
+  constructor(protected config: Config) {}
+
+  abstract getAvailableModelIds(): Promise<string[]>
+
+  async getModel(): Promise<LanguageModelV1> {
+    const provider = await this.getProvider()
+    const availableModelIds = await this.getAvailableModelIds()
+
+    invariant(availableModelIds.length > 0, 'llm:no_models_found')
+
+    const modelId = availableModelIds[0]
+    return provider(modelId, {structuredOutputs: true})
+  }
+
+  abstract getProvider(): Promise<LlmProvider>
 }

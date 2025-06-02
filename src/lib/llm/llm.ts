@@ -41,13 +41,7 @@ export class Llm {
 
   async translateOne(missingTranslation: MissingTranslation): Promise<FilledTranslation> {
     const llmService = await this.getService()
-    const provider = await llmService.getProvider()
-    const availableModelIds = await llmService.getAvailableModelIds()
-
-    invariant(availableModelIds.length > 0, 'llm:no_models_found')
-
-    const modelId = availableModelIds[0]
-    const model = provider(modelId, {structuredOutputs: true})
+    const model = await llmService.getModel()
 
     const fileContents = await fs.readFile(missingTranslation.reference.filePath, 'utf-8')
 
