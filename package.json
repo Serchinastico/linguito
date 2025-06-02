@@ -1,7 +1,7 @@
 {
   "name": "linguito",
   "description": "CLI tool designed to enhance the capabilities of Lingui",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": "Serchinastico",
   "bin": {
     "linguito": "./bin/run.js"

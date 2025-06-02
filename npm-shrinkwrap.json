@@ -1,12 +1,12 @@
 {
   "name": "linguito",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
       "name": "linguito",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "license": "MIT",
       "dependencies": {
         "@ai-sdk/anthropic": "^1.2.12",
