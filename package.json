@@ -6,7 +6,7 @@
   "bin": {
     "linguito": "./bin/run.js"
   },
-  "bugs": "https://github.com/madeja-studio/linguito/issues",
+  "bugs": "https://github.com/antropia-studio/linguito/issues",
   "dependencies": {
     "@ai-sdk/anthropic": "^1.2.12",
     "@ai-sdk/openai": "^1.3.22",
@@ -69,7 +69,7 @@
     "/dist",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/madeja-studio/linguito",
+  "homepage": "https://github.com/antropia-studio/linguito",
   "keywords": [
     "lingui",
     "i18n",
@@ -96,7 +96,7 @@
     "topicSeparator": " ",
     "topics": {}
   },
-  "repository": "madeja-studio/linguito",
+  "repository": "antropia-studio/linguito",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b && tsc-alias",
     "deps": "npm-check-updates",
